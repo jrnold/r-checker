@@ -3,7 +3,7 @@
 NULL
 
 Column <-
-  setClass("Column",
+  setClass("ColumnChecks",
            representation(type = "character",
                           missings = "logical",
                           unique = "logical",
@@ -15,12 +15,12 @@ Column <-
 ## TODO: show, validate
 
 
-ColumnList <- subclass_homog_list("ColumnList", "Column")
+ColumnList <- subclass_homog_list("ColumnCheckList", "Column")
 ## TODO: show, validate
 
 
 Validator <-
-  setClass("Table",
+  setClass("TableChecks",
            representation(columns = "ColumnList",
                           exclusive = "logical",
                           ordered = "logical",
