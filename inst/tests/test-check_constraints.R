@@ -18,7 +18,7 @@ test_that("column_constraints works with no restrictions, empty data frame", {
 })
 
 test_that("column_constraints works with valid column", {
-  foo <- 1:20
+  foo <- 1:5
   expect_equal(check_constraints(foo, checks2), TRUE)
 })
 

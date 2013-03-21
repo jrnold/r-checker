@@ -9,7 +9,7 @@ new_data_frame <- function(columns=character()) {
     cname <- names(columns)[i]
     classname <- columns[i]
     if (classname == "ANY") {
-      .data[[cname]] <- numeric()
+      .data[[cname]] <- logical()
     } else {
       .data[[cname]] <- new(classname)
    }
