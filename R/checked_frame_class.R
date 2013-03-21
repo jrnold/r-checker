@@ -3,15 +3,16 @@
 #' @export checked_frame_class
 NULL
 
-new_data_frame <- function(columns=character()) {
+# checks: ColumnCheckList
+proto_data_frame <- function(checks) {
   .data <- data.frame()
-  for (i in seq_along(columns)) {
-    cname <- names(columns)[i]
-    classname <- columns[i]
-    if (classname == "ANY") {
+  for (i in seq_along(checks)) {
+    cname <- names(checks)[i]
+    column <- checks[[i]]
+    if (column@classtype == "ANY") {
       .data[[cname]] <- logical()
     } else {
-      .data[[cname]] <- new(classname)
+      .data[[cname]] <- new(column@classtype)
    }
   }
   .data
@@ -64,10 +65,12 @@ checked_frame_class <- function(Class, columns=character(),
                                      constraints=list(),
                                      where=topenv(parent.frame())) {
 
-  constraints <- FunctionList(constraints)
+  constraints <- do.call(FunctionList, constraints)
   
   setClass(Class, contains="CheckedFrame",
-           prototype= prototype(x = new_data_frame(columns),
+           prototype=
+           prototype(x = new_data_frame(columns),
+             
              columns = columns,
              exclusive = exclusive,
              constraints = constraints),
@@ -75,9 +78,7 @@ checked_frame_class <- function(Class, columns=character(),
   
   setMethod("initialize", Class,
             function(.Object, x=new_data_frame(columns)) {
-              callNextMethod(.Object, x = x,
-                             columns = columns,
-                             exclusive = exclusive,
+              callNextMethod(.Object, x,
                              constraints = constraints)
             }, where=where)
 
