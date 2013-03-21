@@ -130,5 +130,10 @@ TableChecks <-
                           exclusive = "logical",
                           ordered = "logical",
                           exclude = "character",
-                          constraints = "FunctionList"))
+                          constraints = "FunctionList"),
+           prototype(columns = ColumnCheckList(),
+                     exclusive = FALSE,
+                     ordered = FALSE,
+                     exclude = character(),
+                     constraints = FunctionList()))
 
