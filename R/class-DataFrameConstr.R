@@ -14,70 +14,6 @@
 #' @exportMethod names<-
 NULL
 
-FunctionList <- subclass_homog_list("FunctionList", "function")
-
-#' Validate \code{data.frame}: column names, classes, and arbitrary constraints
-#'
-#' Check that a \code{data.frame} has columns with specified names and classtypes, or
-#' satisfies arbitrary constraints.
-#'
-#' @param object \code{data.frame} to be validated.
-#' @param columns Named \code{character} vector. Names are column names, values are
-#' the required classes for those columns.
-#' @param exclusive \code{logical} If \code{TRUE}, then \code{object}
-#' cannot contain any columns other than those in \code{columns}
-#' @param constraints \code{list} of functions. Each function should
-#' take only one argument, and return \code{logical}.
-#' 
-#' @return If valid, then \code{TRUE}, else \code{character} with
-#' an error message.
-#'
-#' @examples
-#' data(iris)
-#' # check that the iris dataset has numeric column Sepal.Length
-#' # and factor column Species.
-#' validate_data_frame(iris,
-#'                     columns=c(Sepal.Length="numeric",
-#'                               Species="factor"))
-#' # Error because iris does not have column 'foo'
-#' try(validate_data_frame(iris,
-#'                     columns=c(foo="numeric")))
-#' # Error because Sepal.Length is not an integer
-#' try(validate_data_frame(iris,
-#'                     columns=c(foo="ineger")))
-validate_data_frame <- function(object, columns=NULL, exclusive=FALSE, constraints=list()) {
-  constraints <- FunctionList(constraints)
-  if (length(columns)) {
-    for (i in names(columns)) {
-      # hack
-      if (i == "ANY") {
-        next
-      }
-      if (! i %in% colnames(object)) {
-        return(sprintf("column %s not in 'object'", i))
-      }
-      if (!is(object[[i]], columns[[i]])) {
-        return(sprintf("column %s does not inherit from %s",
-                       i, columns[[i]]))
-      }
-    }
-  }
-  if (exclusive) {
-    othercols <- setdiff(colnames(object), names(columns))
-    if (length(othercols)) {
-      return(sprintf("invalid columns: %s",
-                     paste(sQuote(othercols), collapse=", ")))
-    }
-  }
-  for (f in constraints) {
-    rc <- f(object)
-    if (!all(rc)) {
-      return(sprintf("Constraint failed:\n%s", paste(deparse(f), collapse="\n")))
-    }
-  }
-  TRUE
-}
-
 #' Data Frame with constraints
 #'
 #' Creates a new object directly extended \code{\link{data.frame}},
@@ -171,19 +107,25 @@ validate_data_frame <- function(object, columns=NULL, exclusive=FALSE, constrain
 #' try(foo$d <- runif(3))
 DataFrameConstr <-
   setClass("DataFrameConstr", contains="data.frame",
-           representation(columns="character",
+           representation(columns="ColumnList"
                           exclusive="logical",
+                          ordered="logical",
+                          excluse="character",
                           constraints="FunctionList"),
            prototype(data.frame(),
-                     columns=character(),
+                     columns=ColumnList()
                      exclusive=FALSE,
+                     exclude=character(),
                      constraints=FunctionList()))
 
 setValidity("DataFrameConstr",
             function(object) {
-              rc <- validate_data_frame(object, object@columns,
-                                        exclusive=object@exclusive,
-                                        object@constraints)
+              rc <- validate_data_frame(object,
+                                        columns = object@columns,
+                                        exclusive = object@exclusive,
+                                        ordered = object@ordered,
+                                        exclude = object@exclude,
+                                        constraints = object@constraints)
               if (is.character(rc)) {
                 return(rc)
               }
@@ -191,9 +133,8 @@ setValidity("DataFrameConstr",
             })
 
 setMethod("initialize", "DataFrameConstr",
-          function(.Object,
-                   x=new_data_frame(columns), columns=character(),
-                   exclusive=FALSE, constraints=list()) {
+          function(.Object, x=new_data_frame(columns), columns=ColumnList(),
+                   exclusive=FALSE, ordered=FALSE, exclude=constraints=list()) {
               ## Drop any bad columns if exclusive
             if (exclusive) {
               coltouse <- intersect(names(x), names(columns))
@@ -202,6 +143,7 @@ setMethod("initialize", "DataFrameConstr",
             .Object <- callNextMethod(.Object, x)
             .Object@columns <- columns
             .Object@exclusive <- exclusive
+            .Object@exclude <- 
             .Object@constraints <- FunctionList(constraints)
             validObject(.Object)
             .Object
@@ -209,15 +151,9 @@ setMethod("initialize", "DataFrameConstr",
 
 setMethod("show", "DataFrameConstr",
           function(object) {
-            cat("Data frame with constraints\n")
+            cat(sprintf("An object of class %s\n", dQuote(class(x))))
             print(as(object, "data.frame"))
-            cat("Required columns:\n")
-            mapply(function(x, y) cat(sprintf("$ %s: %s\n", x, y)),
-                   names(object@columns), object@columns)
-            cat("Constraints:\n")
-            show(object@constraints)
           })
-
 
 ###Methods
 

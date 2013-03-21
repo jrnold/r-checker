@@ -117,3 +117,6 @@ subclass_homog_list <- function(Class, classtype="ANY",
     
     invisible(.f)
 }
+
+# Used later
+FunctionList <- subclass_homog_list("FunctionList", "function")
