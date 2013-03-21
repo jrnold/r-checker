@@ -73,12 +73,6 @@ constrained_data_frame <- function(Class, columns=character(),
                      constraints=constraints),
            where=where)
   
-  setValidity(Class,
-              function(object) {
-                validObject(as(object, "DataFrameConstr"))
-              },
-              where=where)
-
   setMethod("initialize", Class,
             function(.Object, x=new_data_frame(columns)) {
               callNextMethod(.Object, x=x,

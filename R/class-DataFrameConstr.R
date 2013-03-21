@@ -134,7 +134,8 @@ setValidity("DataFrameConstr",
 
 setMethod("initialize", "DataFrameConstr",
           function(.Object, x=new_data_frame(columns), columns=ColumnList(),
-                   exclusive=FALSE, ordered=FALSE, exclude=constraints=list()) {
+                   exclusive=FALSE, ordered=FALSE, exclude=character(),
+                   constraints=list()) {
               ## Drop any bad columns if exclusive
             if (exclusive) {
               coltouse <- intersect(names(x), names(columns))
@@ -143,9 +144,8 @@ setMethod("initialize", "DataFrameConstr",
             .Object <- callNextMethod(.Object, x)
             .Object@columns <- columns
             .Object@exclusive <- exclusive
-            .Object@exclude <- 
+            .Object@exclude <- exclude
             .Object@constraints <- FunctionList(constraints)
-            validObject(.Object)
             .Object
           })
 

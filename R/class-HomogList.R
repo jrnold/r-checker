@@ -100,7 +100,6 @@ setMethod("initialize", "HomogList",
           function(.Object, x=list(), classtype="ANY") {
             .Object <- callNextMethod(.Object, x)
             .Object@classtype <- classtype
-            validObject(.Object)
             .Object
           })
 
@@ -142,8 +141,7 @@ setMethod("[<-", signature=c(x="HomogList", i="ANY"),
 
 setMethod("[[<-", signature=c(x="HomogList", i="missing", value="ANY"),
           function(x, i, j, ..., value) {
-            # Error ... : [[ ]] with missing subscript
-            callGeneric(as(x, "namedList"), value=value)
+            stop("[[ ]] with missing subscript")
           })
 
 setMethod("[[<-", signature=c(x="HomogList", i="ANY", value="ANY"),
