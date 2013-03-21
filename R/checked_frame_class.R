@@ -67,19 +67,18 @@ checked_frame_class <- function(Class, columns=character(),
   constraints <- FunctionList(constraints)
   
   setClass(Class, contains="CheckedFrame",
-           prototype=
-           prototype(x=new_data_frame(columns), columns=columns,
-                     exclusive=exclusive,
-                     constraints=constraints),
+           prototype= prototype(x = new_data_frame(columns),
+             columns = columns,
+             exclusive = exclusive,
+             constraints = constraints),
            where=where)
   
   setMethod("initialize", Class,
             function(.Object, x=new_data_frame(columns)) {
-              callNextMethod(.Object, x=x,
-                             columns=columns,
-                             exclusive=exclusive,
-                             constraints=constraints
-                             )
+              callNextMethod(.Object, x = x,
+                             columns = columns,
+                             exclusive = exclusive,
+                             constraints = constraints)
             }, where=where)
 
   setMethod("show", Class,

@@ -1,5 +1,8 @@
 #' @include package.R
 #' @include hlist_class.R
+#' @exportClass ColumnChecks
+#' @exportClass ColumnCheckList
+#' @exportClass TableChecks
 #' @export ColumnChecks
 #' @export ColumnCheckList
 #' @export TableChecks
