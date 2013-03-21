@@ -1,5 +1,5 @@
 #' @include package.R
-#' @include subclass_homog_list.R
+#' @include hlist_class.R
 #' @export CheckedFrame
 #' @export validate_data_frame
 #' @exportClass CheckedFrame

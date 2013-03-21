@@ -1,6 +1,6 @@
 #' @include package.R
 #' @include class-HList.R
-#' @export subclass_homog_list
+#' @export hlist_class
 NULL
 
 #' Create a subclass of \code{HList}
@@ -25,8 +25,8 @@ NULL
 #' print(foo)
 #' # error
 #' try(foo[["c"]] <- 3)
-subclass_homog_list <- function(Class, classtype="ANY",
-                                where=topenv(parent.frame())) {
+hlist_class <- function(Class, classtype="ANY",
+                        where=topenv(parent.frame())) {
     .f <- setClass(Class,
                    contains="HList",
                    prototype=prototype(list(), classtype=classtype),
