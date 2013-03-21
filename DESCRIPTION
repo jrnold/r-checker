@@ -20,5 +20,7 @@ Collate:
     'class-CheckedFrame.R'
     'checked_frame_class.R'
     'class-Column.R'
+    'class-Columns.R'
+    'check_constraints.R'
 URL: https://github.com/jrnold/r-checker
 BugReports: https://github.com/jrnold/r-checker
