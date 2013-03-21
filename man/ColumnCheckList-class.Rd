@@ -3,6 +3,9 @@
 \alias{ColumnCheckList}
 \alias{ColumnCheckList-class}
 \title{Class \code{ColumnCheckList}}
+\usage{
+  ColumnCheckList(...)
+}
 \arguments{
   \item{...}{Objects of class
   \code{\linkS4class{ColumnChecks}} to include. All

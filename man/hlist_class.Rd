@@ -10,8 +10,7 @@
   class that will extend \code{HList}.}
 
   \item{classtype}{\code{character} The name of the class
-  which all elements must inherit from. This is tested with
-  \code{is}.}
+  which all elements must inherit from.}
 
   \item{where}{Passed to \code{\link{setClass}}. The
   environment in which to store the definition.}

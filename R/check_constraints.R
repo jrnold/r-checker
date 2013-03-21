@@ -1,5 +1,5 @@
 #' @include package.R
-#' @include class-Columns.R
+#' @include class-TableChecks.R
 #' @exportMethod check_constraints
 NULL
 
@@ -14,30 +14,35 @@ check_constraints.ANY.ColumnChecks <- function(object, checks, name="object") {
   # check type
   if (checks@classtype != "ANY") {
     if (! is(object, checks@classtype)) {
-      return(sprintf("%s is not a %s object",
-                     dQuote(name), dQuote(checks@classtype)))
+      return(sprintf("%s does not inherit from %s",
+                     sQuote(name), dQuote(checks@classtype)))
     }
   }
   # check missings
   if (!checks@missings) {
     if (any(is.na(object))) {
       return(sprintf("%s has missing values",
-                     dQuote(name)))
+                     sQuote(name)))
     }
   }
   # check uniqueness
   if (checks@unique) {
     if (any(duplicated(object))) {
-      return(sprintf("%s is not unique",
-                     dQuote(name)))
+      return(sprintf("%s has duplicated values",
+                     sQuote(name)))
     }
   }
   # check constraints
   for (i in seq_along(checks@constraints)) {
     f <- checks@constraints[[i]]
     if (!all(f(object))) {
-      return(sprintf("%s failed constraint %s:\n%s",
-                     dQuote(checks_name), names(checks@constraints)[i], deparse(f)))
+      constr_name <- names(checks@constraints)[i]
+      if (constr_name == "") {
+        constr_name <- sprintf("#%d", i)
+      } else {
+        constr_name <- dQuote(constr_name)
+      }
+      return(sprintf("Failed constraint %s", constr_name))
     }
   }
   TRUE
@@ -46,18 +51,21 @@ check_constraints.ANY.ColumnChecks <- function(object, checks, name="object") {
 setMethod("check_constraints", c("ANY", "ColumnChecks"),
           check_constraints.ANY.ColumnChecks)
 
-## setMethod("check_constraints", c("data.frame", "Table"),
-##           function(object, validator, ...) {
-##           })
-
-## setMethod("check_constraints", c("data.frame", "ColumnList"),
-##           function(object, validator, ...) {
-##           })
-
-## check_constraints.data.frame.ColumnCheckList <- function(x, checks) {
-## }
-
 check_constraints.data.frame.TableChecks <- function(x, checks) {
+  # check all columns 
+  for (i in seq_along(checks@columns)) {
+    column_name <- names(checks@columns)[i]
+    column <- checks@columns[[i]]
+    # check existence
+    if (! column_name %in% names(x)) {
+      return(sprintf("Column %s not present", dQuote(column_name)))
+    } else {
+      rc <- check_constraints(checks@columns)
+      if (is.character(rc)) {
+        return(rc)
+      }
+    }
+  }
   # error if any extra columns
   if (checks@exclusive) {
      badcols <- setdiff(names(x), names(checks@columns))
@@ -83,25 +91,19 @@ check_constraints.data.frame.TableChecks <- function(x, checks) {
                      paste(dQuote(bacols), collapse=",")))
     }
   }
-
-  # check all columns 
-  for (i in seq_along(checks@columns)) {
-    column_name <- names(checks@columns)[i]
-    column <- checks@columns[[i]]
-    # check existence
-    if (! column_name %in% names(x)) {
-      return(sprintf("Column %s not present", dQuote(column_name)))
-    } else {
-    }
-    # check global constraints
-    for (i in seq_along(checks@constraints)) {
-      f <- checks@constraints[[i]]
-      if (!f(x)) {
-        return(sprintf("Failed constraint %s\n:%s",
-                       names(checks@constraints)[i], deparse(f)))
+  # check global constraints
+  for (i in seq_along(checks@constraints)) {
+    f <- checks@constraints[[i]]
+    if (!all(f(x))) {
+      constr_name <- names(checks@constraints)[i]
+      if (constr_name == "") {
+        constr_name <- sprintf("#%d", i)
       }
+      return(sprintf("Failed constraint %s", constr_name))
     }
   }
   TRUE
-
 }
+
+setMethod("check_constraints", c("data.frame", "Table"),
+          check_constraints.data.frame.TableChecks)

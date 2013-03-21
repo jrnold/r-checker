@@ -5,6 +5,10 @@
 #' @export TableChecks
 NULL
 
+empty_character <- function(x) {
+  (is.na(x) | x == "")
+}
+
 #' @docType class
 #' @aliases ColumnChecks-class
 #' @aliases ColumnChecks
@@ -48,6 +52,7 @@ ColumnChecks <-
                      unique = FALSE,
                      constraints = FunctionList()))
 
+#' @rdname ColumnCheckList-class
 #' @docType class
 #' @aliases ColumnCheckList-class
 #' @aliases ColumnCheckList
@@ -70,7 +75,28 @@ ColumnChecks <-
 #' @family Check objects
 #' @examples
 #' showClass("ColumnCheckList")
-ColumnCheckList <- hlist_class("ColumnCheckList", "Column")
+setClass("ColumnCheckList",
+         contains="namedList",
+         representation=representation(classtype = "character"),
+         prototype=prototype(nlist(), classtype="ColumnChecks"))
+
+validity.ColumnCheckList <- function(object) {
+  if (!all(sapply(object, is, class2=object@classtype))) {
+    return(sprintf("Not all elements inherit from class %s",
+                   dQuote(object@classtype)))
+  }
+  if (any(sapply(names(object), empty_character))) {
+    return(sprintf("Names cannot be empty"))
+  }
+  TRUE
+}
+
+setValidity("ColumnCheckList", validity.ColumnCheckList)
+
+#' @rdname ColumnCheckList-class
+ColumnCheckList <- function(...) {
+  new("ColumnCheckList", nlist(...))
+}
 
 #' @docType class
 #' @aliases TableChecks-class
