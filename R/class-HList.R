@@ -1,6 +1,6 @@
 #' @include package.R
-#' @exportClass HomogList
-#' @export HomogList
+#' @exportClass HList
+#' @export HList
 #' @exportMethod [
 #' @exportMethod [<-
 #' @exportMethod [[<-
@@ -14,13 +14,13 @@ is_or_null <- function(object, class2) {
   is(object, class2) || is.null(object)
 }
 
-#' Homogenous List
+#' Homogenous lists
 #'
 #' An S4 subclass of \code{list} in which all elements of the
 #' list to be the same class.
 #'
 #' This is similar to the 'atomic lists' in R in that all elements
-#' of the vector must be the same class, but the \code{HomogList}
+#' of the vector must be the same class, but the \code{HList}
 #' supports arbitrary classes. \code{NULL} values are also valid.
 #' 
 #' @section Slots:
@@ -42,32 +42,32 @@ is_or_null <- function(object, class2) {
 #' @section Methods:
 #' 
 #' \describe{
-#'     \item{[<-}{\code{signature(x = "HomogList")}: ... }
-#'     \item{[}{\code{signature(x = "HomogList")}: ... }
-#'     \item{[[<-}{\code{signature(x = "HomogList")}: ... }
-#'     \item{c}{\code{signature(x = "HomogList")}: ... }
-#'     \item{show}{\code{signature(object = "HomogList")}: ... }
+#'     \item{[<-}{\code{signature(x = "HList")}: ... }
+#'     \item{[}{\code{signature(x = "HList")}: ... }
+#'     \item{[[<-}{\code{signature(x = "HList")}: ... }
+#'     \item{c}{\code{signature(x = "HList")}: ... }
+#'     \item{show}{\code{signature(object = "HList")}: ... }
 #' }
 #' 
-#' @aliases HomogList-class
-#' @aliases HomogList
-#' @aliases [,HomogList,missing,ANY-method
-#' @aliases [,HomogList,ANY,ANY-method
-#' @aliases [<-,HomogList,missing,ANY-method
-#' @aliases [<-,HomogList,ANY,ANY-method
-#' @aliases [[<-,HomogList,missing,ANY-method
-#' @aliases [[<-,HomogList,ANY,ANY-method
-#' @aliases $<-,HomogList-method
-#' @aliases c,HomogList-method
-#' @aliases length<-,HomogList,numeric-method
-#' @aliases names<-,HomogList,NULL-method
-#' @aliases show,HomogList-method
+#' @aliases HList-class
+#' @aliases HList
+#' @aliases [,HList,missing,ANY-method
+#' @aliases [,HList,ANY,ANY-method
+#' @aliases [<-,HList,missing,ANY-method
+#' @aliases [<-,HList,ANY,ANY-method
+#' @aliases [[<-,HList,missing,ANY-method
+#' @aliases [[<-,HList,ANY,ANY-method
+#' @aliases $<-,HList-method
+#' @aliases c,HList-method
+#' @aliases length<-,HList,numeric-method
+#' @aliases names<-,HList,NULL-method
+#' @aliases show,HList-method
 #' @docType class
 #' @keywords classes
-#' @exportClass HomogList
+#' @exportClass HList
 #' @export
 #' @examples
-#' foo <- HomogList(list(sum=sum, max=max, min=min), "function")
+#' foo <- HList(list(sum=sum, max=max, min=min), "function")
 #' print(foo)
 #' x <- 1:10
 #' lapply(foo, function(f) f(x))
@@ -75,12 +75,12 @@ is_or_null <- function(object, class2) {
 #' print(foo)
 #' # error
 #' try(foo[["a"]] <- 1)
-HomogList <- setClass("HomogList",
+HList <- setClass("HList",
                       contains="namedList",
                       representation(classtype="character"),
                       prototype(list(), classtype="ANY"))
 
-setValidity("HomogList",
+setValidity("HList",
             function(object) {
                 if (length(object@classtype) != 1) {
                     return("object@classtype has a length != 1")
@@ -96,14 +96,14 @@ setValidity("HomogList",
                 TRUE
               })
 
-setMethod("initialize", "HomogList",
+setMethod("initialize", "HList",
           function(.Object, x=list(), classtype="ANY") {
             .Object <- callNextMethod(.Object, x)
             .Object@classtype <- classtype
             .Object
           })
 
-setMethod("show", "HomogList",
+setMethod("show", "HList",
           function(object) {
             cat(sprintf("List of %s objects\n", dQuote(object@classtype)))
             print(structure(object@.Data, names = object@names))
@@ -112,59 +112,59 @@ setMethod("show", "HomogList",
 ### Methods
 
 
-setMethod("c", signature="HomogList",
+setMethod("c", signature="HList",
           def=function(x, ...) {
             y <- callGeneric(as(x, "namedList"), ...)
-            new("HomogList", y, classtype=x@classtype)
+            new("HList", y, classtype=x@classtype)
           })
 
-setMethod("[", signature=c(x="HomogList", i="missing"), 
+setMethod("[", signature=c(x="HList", i="missing"), 
           function(x, i, j, ...., drop) x)
 
-setMethod("[", signature=c(x="HomogList", i="ANY"), 
+setMethod("[", signature=c(x="HList", i="ANY"), 
           function(x, i, j, ...., drop) {
             y <- callGeneric(as(x, "namedList"), i=i)
-            new("HomogList", y, classtype=x@classtype)
+            new("HList", y, classtype=x@classtype)
           })
 
-setMethod("[<-", signature=c(x="HomogList", i="missing"), 
+setMethod("[<-", signature=c(x="HList", i="missing"), 
           function(x, i, j, ..., value) {
             y <- callGeneric(as(x, "namedList"), value=value)
-            new("HomogList", y, classtype=x@classtype)
+            new("HList", y, classtype=x@classtype)
           })
 
-setMethod("[<-", signature=c(x="HomogList", i="ANY"), 
+setMethod("[<-", signature=c(x="HList", i="ANY"), 
           function(x, i, j, ..., value) {
             y <- callGeneric(as(x, "namedList"), i, value=value)
-            new("HomogList", y, classtype=x@classtype)
+            new("HList", y, classtype=x@classtype)
           })
 
-setMethod("[[<-", signature=c(x="HomogList", i="missing", value="ANY"),
+setMethod("[[<-", signature=c(x="HList", i="missing", value="ANY"),
           function(x, i, j, ..., value) {
             stop("[[ ]] with missing subscript")
           })
 
-setMethod("[[<-", signature=c(x="HomogList", i="ANY", value="ANY"),
+setMethod("[[<-", signature=c(x="HList", i="ANY", value="ANY"),
           function(x, i, j, ..., value) {
             y <- callGeneric(as(x, "namedList"), i=i, value=value)
-            new("HomogList", y, classtype=x@classtype)
+            new("HList", y, classtype=x@classtype)
           })
 
-setMethod("$<-", signature=c(x="HomogList"),
+setMethod("$<-", signature=c(x="HList"),
           function(x, name, value) {
             x[[name]] <- value
             x
           })
 
-setMethod("names<-", signature=c(x="HomogList", value="NULL"),
+setMethod("names<-", signature=c(x="HList", value="NULL"),
           function(x, value) {
             x@names <- rep(NA_character_, length(x))
             x
           })
 
-setMethod("length<-", signature=c(x="HomogList", value="numeric"),
+setMethod("length<-", signature=c(x="HList", value="numeric"),
           function(x, value) {
             y <- callGeneric(as(x, "namedList"), value)
-            new("HomogList", y, classtype=x@classtype)
+            new("HList", y, classtype=x@classtype)
           })
 

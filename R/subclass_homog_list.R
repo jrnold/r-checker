@@ -1,14 +1,14 @@
 #' @include package.R
-#' @include class-HomogList.R
+#' @include class-HList.R
 #' @export subclass_homog_list
 NULL
 
-#' Create a subclass of HomogList
+#' Create a subclass of \code{HList}
 #'
-#' Creates a new subclass of \code{HomogList} for a specific class.
+#' Creates a new subclass of \code{HList} for a specific class.
 #'
 #' @param Class \code{character} string name of the new class
-#' that will extend \code{HomogList}.
+#' that will extend \code{HList}.
 #' @param classtype \code{character} The name of the class which 
 #' all elements must inherit from. This is tested with \code{is}.
 #' @param where Passed to \code{\link{setClass}}.
@@ -28,7 +28,7 @@ NULL
 subclass_homog_list <- function(Class, classtype="ANY",
                                 where=topenv(parent.frame())) {
     .f <- setClass(Class,
-                   contains="HomogList",
+                   contains="HList",
                    prototype=prototype(list(), classtype=classtype),
                    where=where)
     
@@ -49,7 +49,7 @@ subclass_homog_list <- function(Class, classtype="ANY",
     setMethod("show", Class,
               function(object) {
                 cat(sprintf("An object of class %s\n", dQuote(Class)))
-                callGeneric(as(object, "HomogList"))
+                callGeneric(as(object, "HList"))
               }, where=where)
 
     setMethod("[", signature = c(x = Class, i = "missing", j="ANY"), 
@@ -59,31 +59,31 @@ subclass_homog_list <- function(Class, classtype="ANY",
     
     setMethod("[", signature = c(x = Class, i = "ANY", j="ANY"), 
               function(x, i, j, drop) {
-                y <- callGeneric(as(x, "HomogList"), i=i)
+                y <- callGeneric(as(x, "HList"), i=i)
                 new(Class, y)
               }, where = where)
     
     setMethod("[<-", signature = c(x = Class, i = "missing"), 
               function(x, i, j, ..., value) {
-                y <- callGeneric(as(x, "HomogList"), value=value)
+                y <- callGeneric(as(x, "HList"), value=value)
                 new(Class, y)
               }, where = where)
     
     setMethod("[<-", signature = c(x = Class, i = "ANY"), 
               function(x, i, j, ..., value) {
-                y <- callGeneric(as(x, "HomogList"), i, value=value)
+                y <- callGeneric(as(x, "HList"), i, value=value)
                 new(Class, y)
               }, where = where)
 
     setMethod("[[<-", signature=c(x=Class, i = "missing", value = "ANY"),
               function(x, i, j, ..., value) {
                 # Error ... : [[ ]] with missing subscript
-                callGeneric(as(x, "HomogList"), value=value)
+                callGeneric(as(x, "HList"), value=value)
               }, where = where)
 
     setMethod("[[<-", signature = c(x = Class, i = "ANY", value = "ANY"),
               function(x, i, j, ..., value) {
-                y <- callGeneric(as(x, "HomogList"), i=i, value=value)
+                y <- callGeneric(as(x, "HList"), i=i, value=value)
                 new(Class, y)
               }, where = where)
 
@@ -95,7 +95,7 @@ subclass_homog_list <- function(Class, classtype="ANY",
 
     setMethod("c", signature = Class,
               function(x, ...) {
-                y <- callGeneric(as(x, "HomogList"), ...)
+                y <- callGeneric(as(x, "HList"), ...)
                 new(Class, y)
               }, where = where)
     
@@ -107,7 +107,7 @@ subclass_homog_list <- function(Class, classtype="ANY",
 
     setMethod("length<-", signature=c(x = Class, value="numeric"),
               function(x, value) {
-                y <- callGeneric(as(x, "HomogList"), value)
+                y <- callGeneric(as(x, "HList"), value)
                 new(Class, y)
               }, where = where)
     
