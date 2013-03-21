@@ -217,7 +217,7 @@ constrained_data_frame <- function(Class, columns=character(),
         function(from, to) new(Class, from), where=where)
   
   .f <- function(...) {
-    new(Class, ...)
+    new(Class, data.frame(...))
   }
   invisible(.f)
 }
