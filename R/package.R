@@ -19,5 +19,5 @@
 #' @docType package
 NULL
 
-setGeneric("colnames<-", base::`colnames<-`)
-setGeneric("colnames<-", base::`rownames<-`)
+setGeneric("colnames<-")
+setGeneric("rownames<-")

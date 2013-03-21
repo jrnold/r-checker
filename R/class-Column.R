@@ -12,16 +12,38 @@ Column <-
                      missings = TRUE,
                      unique = FALSE,
                      constraints = FunctionList()))
+## TODO: show, validate
+
 
 ColumnList <- subclass_homog_list("ColumnList", "Column")
+## TODO: show, validate
+
 
 Validator <-
-  setClass("Validator",
+  setClass("Table",
            representation(columns = "ColumnList",
                           exclusive = "logical",
                           ordered = "logical",
                           exclude = "character",
                           constraints = "FunctionList"))
+
+## TODO: show
+setMethod("check_constraints",
+          function(object, validator, ...) {
+            standardGeneric("check_constraints")
+          })
+
+## setMethod("check_constraints", c("data.frame", "Table"),
+##           function(object, validator, ...) {
+##           })
+
+## setMethod("check_constraints", c("data.frame", "ColumnList"),
+##           function(object, validator, ...) {
+##           })
+
+## setMethod("check_constraints", c("ANY", "Column"),
+##           function(object, validator, ...) {
+##           })
 
 
 #' Validate Data Frame
