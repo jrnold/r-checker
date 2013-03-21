@@ -12,10 +12,10 @@ setGeneric("check_constraints",
 
 check_constraints.ANY.ColumnChecks <- function(object, checks, name="object") {
   # check type
-  if (checks@type != "ANY") {
-    if (! is(object, checks@type)) {
+  if (checks@classtype != "ANY") {
+    if (! is(object, checks@classtype)) {
       return(sprintf("%s is not a %s object",
-                     dQuote(name), dQuote(checks@type)))
+                     dQuote(name), dQuote(checks@classtype)))
     }
   }
   # check missings

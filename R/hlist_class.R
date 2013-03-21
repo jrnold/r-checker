@@ -5,14 +5,19 @@ NULL
 
 #' Create a subclass of \code{HList}
 #'
-#' Creates a new subclass of \code{HList} for a specific class.
+#' Create a subclass of \code{HList}, which restricts elements
+#' of the list to be a specified class.
 #'
 #' @param Class \code{character} string name of the new class
 #' that will extend \code{HList}.
 #' @param classtype \code{character} The name of the class which 
-#' all elements must inherit from. This is tested with \code{is}.
-#' @param where Passed to \code{\link{setClass}}.
+#' all elements must inherit from.
+#' @param where Passed to \code{\link{setClass}}. The environment
+#' in which to store the definition.
 #'
+#' @return \code{function} with usage \code{function(...)}, which
+#' will create objects of the newly defined class.
+#' 
 #' @examples
 #' NumericList <- 
 #'   hlist_class("NumericList", "numeric")

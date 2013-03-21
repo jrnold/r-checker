@@ -13,11 +13,16 @@
   which all elements must inherit from. This is tested with
   \code{is}.}
 
-  \item{where}{Passed to \code{\link{setClass}}.}
+  \item{where}{Passed to \code{\link{setClass}}. The
+  environment in which to store the definition.}
+}
+\value{
+  \code{function} with usage \code{function(...)}, which
+  will create objects of the newly defined class.
 }
 \description{
-  Creates a new subclass of \code{HList} for a specific
-  class.
+  Create a subclass of \code{HList}, which restricts
+  elements of the list to be a specified class.
 }
 \examples{
 NumericList <-

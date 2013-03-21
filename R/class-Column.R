@@ -39,11 +39,11 @@ NULL
 #' showClass("ColumnChecks")
 ColumnChecks <-
   setClass("ColumnChecks",
-           representation(type = "character",
+           representation(classtype = "character",
                           missings = "logical",
                           unique = "logical",
                           constraints = "FunctionList"),
-           prototype(type = "ANY",
+           prototype(classtype = "ANY",
                      missings = TRUE,
                      unique = FALSE,
                      constraints = FunctionList()))
