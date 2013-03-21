@@ -1,4 +1,4 @@
 library("testthat")
-library("DataFrameConstr")
+library("checker")
 
-test_package("DataFrameConstr")
+test_package("checker")
