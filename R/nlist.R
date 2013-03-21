@@ -1,4 +1,4 @@
-#' @include package
+#' @include package.R
 #' @export nlist
 NULL
 

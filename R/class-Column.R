@@ -1,136 +1,108 @@
-## #' @include package.R
-## #' @include subclass_homog_list.R
-## NULL
+#' @include package.R
+#' @include hlist_class.R
+#' @export ColumnChecks
+#' @export ColumnCheckList
+#' @export TableChecks
+NULL
 
-## #' Class \code{ColumnChecks}
-## #'
-## #' A class containing column level checks
-## Column <-
-##   setClass("ColumnChecks",
-##            representation(type = "character",
-##                           missings = "logical",
-##                           unique = "logical",
-##                           constraints = "FunctionList"),
-##            prototype(type = "ANY",
-##                      missings = TRUE,
-##                      unique = FALSE,
-##                      constraints = FunctionList()))
-## ## TODO: show, validate
+#' @docType class
+#' @aliases ColumnChecks-class
+#' @aliases ColumnChecks
+#' @title Class \code{ColumnChecks}
+#'
+#' @description An object containing column-level checks. The following
+#' constraint checks are implemented:
+#'
+#' \itemize{
+#' \item class type
+#' \item uniqueness
+#' \item missing values
+#' \item list of arbitrary constraints
+#' }
+#'
+#' @param ... Data to be included in the object.
+#' 
+#' @section Objects from the Class:
+#' 
+#' Objects can be created by calls of the form \code{ColumnChecks(...)}.
+#'
+#' @section Slots:
+#' \describe{
+#' \item{\code{type}}{\code{character}. Class type of object to be checked.}
+#' \item{\code{missings}}{\code{logical}. If \code{FALSE}, then no \code{NA} values are allowed in the object to be checked.}
+#' \item{\code{uniqueness}}{\code{logical}. If \code{FALSE}, then duplicate values are allowed in the object to be checked.}
+#'     \item{\code{constraints}:}{\code{"FunctionList"}. Additional arbitrary constraints. Each function must return either \code{TRUE} if the constraint is satisfied, or \code{FALSE} if it is violated. These functions can also return vectors, in which case, the constraint is violated if there is any \code{FALSE} value.}
+#' }
+#'
+#' @family Check objects
+#' @examples
+#' showClass("ColumnChecks")
+ColumnChecks <-
+  setClass("ColumnChecks",
+           representation(type = "character",
+                          missings = "logical",
+                          unique = "logical",
+                          constraints = "FunctionList"),
+           prototype(type = "ANY",
+                     missings = TRUE,
+                     unique = FALSE,
+                     constraints = FunctionList()))
 
-## ColumnList <- subclass_homog_list("ColumnCheckList", "Column")
-## ## TODO: show, validate
+#' @docType class
+#' @aliases ColumnCheckList-class
+#' @aliases ColumnCheckList
+#' @title Class \code{ColumnCheckList}
+#'
+#' @description An object containing multiple column-level constraint checks.
+#'
+#' @param ... Objects of class \code{\linkS4class{ColumnChecks}} to include.
+#' All arguments must be named. The names of the \code{ColumnChecks} objects
+#' will correspond with their names in the \code{data.frame} to be checked.
+#' 
+#' @section Objects from the Class:
+#' 
+#' Objects can be created by calls of the form \code{ColumnCheckList(...)}.
+#'
+#' @section Extends:
+#'   \describe{
+#'     \item{\code{\linkS4class{HList}}}{directly.}
+#'   }
+#' @family Check objects
+#' @examples
+#' showClass("ColumnCheckList")
+ColumnCheckList <- hlist_class("ColumnCheckList", "Column")
 
-## Validator <-
-##   setClass("TableChecks",
-##            representation(columns = "ColumnList",
-##                           exclusive = "logical",
-##                           ordered = "logical",
-##                           exclude = "character",
-##                           constraints = "FunctionList"))
+#' @docType class
+#' @aliases TableChecks-class
+#' @aliases TableChecks
+#' @title Class \code{ColumnChecks}
+#'
+#' @description An object containing constraint checks intended
+#' to be used on a \code{data.frame}.
+#'
+#' @param ... Data to include in the new object. Named arguments
+#' correspond to slots in the class definition.
+#' 
+#' @section Objects from the Class:
+#' 
+#' Objects can be created by calls of the form \code{TableChecks(...)}.
+#'
+#' @section Slots:
+#'   \describe{
+#'     \item{\code{columns}:}{\code{"ColumnCheckList"}. Column-level constraints.}
+#'     \item{\code{exclusive}:}{\code{"logical"}. If \code{TRUE}, then the \code{data.frame} can only contain the columns in \code{columns}. If \code{FALSE}, the \code{data.frame} still must contain the columns in \code{columns}, but can contain additional columns.}
+#'     \item{\code{ordered}:}{\code{"logical"}. If \code{TRUE}, the columns in the \code{data.frame} must appear in the same order as they are listed in \code{columns}, and those columns must be the first columns in the \code{data.frame}. If \code{FALSE}, the the columns in \code{columns} can appear anywhere in the \code{data.frame}.}
+#'     \item{\code{exclude}:}{\code{"character"}. A list of column names which cannot be in the data frame.}
+#'     \item{\code{constraints}:}{\code{"FunctionList"}. Additional arbitrary constraints. Each function must return either \code{TRUE} if the constraint is satisfied, or \code{FALSE} if it is violated.}
+#'   }
+#' @family Check objects
+#' @examples
+#' showClass("TableChecks")
+TableChecks <-
+  setClass("TableChecks",
+           representation(columns = "ColumnCheckList",
+                          exclusive = "logical",
+                          ordered = "logical",
+                          exclude = "character",
+                          constraints = "FunctionList"))
 
-## ## TODO: show
-## setMethod("check_constraints",
-##           function(object, validator, ...) {
-##             standardGeneric("check_constraints")
-##           })
-
-## ## setMethod("check_constraints", c("data.frame", "Table"),
-## ##           function(object, validator, ...) {
-## ##           })
-
-## ## setMethod("check_constraints", c("data.frame", "ColumnList"),
-## ##           function(object, validator, ...) {
-## ##           })
-
-## ## setMethod("check_constraints", c("ANY", "Column"),
-## ##           function(object, validator, ...) {
-## ##           })
-
-## check_constraints.data.frame.ColumnCheckList <- function(x, checks) {
-  
-## }
-
-## check_constraints.ANY.ColumnChecks <- function(x, checks, name="x") {
-##   # check classtype
-##   if (checks@classtype != "ANY") {
-##     if (! is(x, checks@classtype)) {
-##       return(sprintf("%s is not a %s object",
-##                      dQuote(name), dQuote(checks@classtype)))
-##     }
-##   }
-##   # check missings
-##   if (!checks@missings) {
-##     if (any(is.na(x))) {
-##       return(sprintf("%s has missing values",
-##                      dQuote(name)))
-##     }
-##   }
-##   # check uniqueness
-##   if (checks@unique) {
-##     if (any(duplicated(x))) {
-##       return(sprintf("%s is not unique",
-##                      dQuote(name)))
-##     }
-##   }
-##   # check constraints
-##   for (i in seq_along(checks@constraints)) {
-##     f <- checks@constraints[[i]]
-##     if (!all(f(x))) {
-##       return(sprintf("%s failed constraint %s:\n%s",
-##                      dQuote(checks_name), names(checks@constraints)[i], deparse(f)))
-##     }
-##   }
-##   TRUE
-## }
-
-## #' Validate Data Frame
-## #'
-## #' @param x \code{data.frame}. Data frame to be checked.
-## #' @param columns \code{ColumnList} containing column level checks.
-## check_constraints.data.frame.TableChecks <- function(x, checks) {
-##   # error if any extra columns
-##   if (checks@exclusive) {
-##      badcols <- setdiff(names(x), names(checks@columns))
-##     if (length(badcols)) {
-##       return("Extra columns: %s", paste(dQuote(names(badcols)), collapse=", "))
-##     }
-##   }
-##   # Check that columns are in order
-##   if (checks@ordered) {
-##     n <- length(checks@columns)
-##     inorder <- (names(x)[seq_len(n)] == names(checks@columns))
-##     if (!all(inorder)) {
-##       return(sprintf("Checks@Columns not in order\nExpected order:%s\nOut of order columns:%s",
-##                      paste(dQuote(names(checks@columns)), collapse=","),
-##                      paste(dQuote(names(x)[!inorder]), collapse=",")))
-##     }
-##   }
-##   # Check for excluded columns
-##   if (length(checks@exclude)) {
-##     badcols <- intersect(names(x), checks@exclude)
-##     if (length(badcols)) {
-##       return(sprintf("Columns which should not be in the data.frame:\n%s",
-##                      paste(dQuote(bacols), collapse=",")))
-##     }
-##   }
-
-##   # check all columns 
-##   for (i in seq_along(checks@columns)) {
-##     column_name <- names(checks@columns)[i]
-##     column <- checks@columns[[i]]
-##     # check existence
-##     if (! column_name %in% names(x)) {
-##       return(sprintf("Column %s not present", dQuote(column_name)))
-##     } else {
-##     }
-##     # check global constraints
-##     for (i in seq_along(checks@constraints)) {
-##       f <- checks@constraints[[i]]
-##       if (!f(x)) {
-##         return(sprintf("Failed constraint %s\n:%s",
-##                        names(checks@constraints)[i], deparse(f)))
-##       }
-##     }
-##   }
-##   TRUE
-## }

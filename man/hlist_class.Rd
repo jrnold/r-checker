@@ -1,13 +1,13 @@
-\name{subclass_homog_list}
-\alias{subclass_homog_list}
-\title{Create a subclass of HomogList}
+\name{hlist_class}
+\alias{hlist_class}
+\title{Create a subclass of \code{HList}}
 \usage{
-  subclass_homog_list(Class, classtype = "ANY",
+  hlist_class(Class, classtype = "ANY",
     where = topenv(parent.frame()))
 }
 \arguments{
   \item{Class}{\code{character} string name of the new
-  class that will extend \code{HomogList}.}
+  class that will extend \code{HList}.}
 
   \item{classtype}{\code{character} The name of the class
   which all elements must inherit from. This is tested with
@@ -16,12 +16,12 @@
   \item{where}{Passed to \code{\link{setClass}}.}
 }
 \description{
-  Creates a new subclass of \code{HomogList} for a specific
+  Creates a new subclass of \code{HList} for a specific
   class.
 }
 \examples{
 NumericList <-
-  subclass_homog_list("NumericList", "numeric")
+  hlist_class("NumericList", "numeric")
 # creates a new class "NumericList"
 showClass("NumericList")
 # Create a new object of class NumericList

@@ -14,10 +14,11 @@ Suggests:
     roxygen2
 Collate:
     'package.R'
+    'nlist.R'
+    'class-HList.R'
+    'hlist_class.R'
     'class-CheckedFrame.R'
     'checked_frame_class.R'
-    'class-HList.R'
-    'package'
-    'nlist.R'
+    'class-Column.R'
 URL: https://github.com/jrnold/r-checker
 BugReports: https://github.com/jrnold/r-checker
