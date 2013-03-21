@@ -52,7 +52,7 @@ setMethod("check_constraints", c("ANY", "ColumnChecks"),
           check_constraints.ANY.ColumnChecks)
 
 check_constraints.data.frame.TableChecks <- function(x, checks) {
-  # check all columns 
+  # check columns
   for (i in seq_along(checks@columns)) {
     column_name <- names(checks@columns)[i]
     column <- checks@columns[[i]]
@@ -60,6 +60,7 @@ check_constraints.data.frame.TableChecks <- function(x, checks) {
     if (! column_name %in% names(x)) {
       return(sprintf("Column %s not present", dQuote(column_name)))
     } else {
+      # check column level constraints
       rc <- check_constraints(checks@columns)
       if (is.character(rc)) {
         return(rc)
