@@ -57,7 +57,7 @@ hlist_class <- function(Class, classtype="ANY",
               callGeneric(as(object, "HList"))
             }, where=where)
   
-  setMethod("[", signature = c(x = Class, i = "missing", j="ANY"), 
+  setMethod("[", signature = c(x = Class, i = "missing", j="ANY"),
             function(x, i, j, drop) {
               x
             }, where=where)
