@@ -1,6 +1,6 @@
 #' @include package.R
-#' @include class-DataFrameConstr.R
-#' @export constrained_data_frame
+#' @include class-CheckedFrame.R
+#' @export checked_frame_class
 NULL
 
 new_data_frame <- function(columns=character()) {
@@ -17,10 +17,10 @@ new_data_frame <- function(columns=character()) {
   .data
 }
 
-#' Create subclasss of \code{DataFrameConstr}
+#' Create subclasss of \code{CheckedFrame}
 #'
 #' This function creates a class which directly extends
-#' \code{DataFrameConstr} with the requirement that the slots
+#' \code{CheckedFrame} with the requirement that the slots
 #' (\code{columns}, and \code{exclusive}
 #' take specific values.
 #'
@@ -40,7 +40,7 @@ new_data_frame <- function(columns=character()) {
 #'
 #' @examples
 #' Foo <-
-#'   constrained_data_frame("Foo",
+#'   checked_frame_class("Foo",
 #'                          columns = c(a = "numeric", b = "ANY", c = "factor"),
 #'                          constraints = list(function(x) {x$a > 0}))
 #' showClass("Foo")
@@ -59,26 +59,20 @@ new_data_frame <- function(columns=character()) {
 #' # errors
 #' try(foo$b <- as.character(foo$b))
 #' try(foo$d <- runif(3))
-constrained_data_frame <- function(Class, columns=character(),
+checked_frame_class <- function(Class, columns=character(),
                                      exclusive=FALSE,
                                      constraints=list(),
                                      where=topenv(parent.frame())) {
 
   constraints <- FunctionList(constraints)
   
-  setClass(Class, contains="DataFrameConstr",
+  setClass(Class, contains="CheckedFrame",
            prototype=
            prototype(x=new_data_frame(columns), columns=columns,
                      exclusive=exclusive,
                      constraints=constraints),
            where=where)
   
-  setValidity(Class,
-              function(object) {
-                validObject(as(object, "DataFrameConstr"))
-              },
-              where=where)
-
   setMethod("initialize", Class,
             function(.Object, x=new_data_frame(columns)) {
               callNextMethod(.Object, x=x,
@@ -91,7 +85,7 @@ constrained_data_frame <- function(Class, columns=character(),
   setMethod("show", Class,
             function(object) {
               cat(sprintf("An object of class %s\n", dQuote(Class)))
-              callGeneric(as(object, "DataFrameConstr"))
+              callGeneric(as(object, "CheckedFrame"))
             }, where=where)
 
   # [-method
@@ -106,8 +100,8 @@ constrained_data_frame <- function(Class, columns=character(),
 
   setMethod("[", c(x=Class, i = "missing", j = "ANY"), 
             function(x, i, j, drop=TRUE) {
-              y <- callGeneric(as(x, "DataFrameConstr"), , j, drop=drop)
-              if (is(y, "DataFrameConstr")) {
+              y <- callGeneric(as(x, "CheckedFrame"), , j, drop=drop)
+              if (is(y, "CheckedFrame")) {
                 y <- new(Class, y)
               }
               y
@@ -115,8 +109,8 @@ constrained_data_frame <- function(Class, columns=character(),
   
   setMethod("[", c(x=Class, i = "ANY", j = "missing"), 
             function(x, i, j, drop=TRUE) {
-              y <- callGeneric(as(x, "DataFrameConstr"), i, , drop=drop)
-              if (is(y, "DataFrameConstr")) {
+              y <- callGeneric(as(x, "CheckedFrame"), i, , drop=drop)
+              if (is(y, "CheckedFrame")) {
                 y <- new(Class, y)
               }
               y
@@ -124,8 +118,8 @@ constrained_data_frame <- function(Class, columns=character(),
 
   setMethod("[", c(x=Class, i = "ANY", j = "ANY"), 
             function(x, i, j, drop=TRUE) {
-              y <- callGeneric(as(x, "DataFrameConstr"), i, j, drop=drop)
-              if (is(y, "DataFrameConstr")) {
+              y <- callGeneric(as(x, "CheckedFrame"), i, j, drop=drop)
+              if (is(y, "CheckedFrame")) {
                 y <- new(Class, y)
               }
               y
@@ -134,37 +128,37 @@ constrained_data_frame <- function(Class, columns=character(),
   # [<- method
   setMethod("[<-", c(x=Class, i="missing", j="missing"),
             function(x, i, j, value) {
-              y <- callGeneric(as(x, "DataFrameConstr"), , , value=value)
+              y <- callGeneric(as(x, "CheckedFrame"), , , value=value)
               new(Class, y)
             }, where=where)
   
   setMethod("[<-", c(x=Class, i="missing", j="ANY"),
             function(x, i, j, value) {
-              y <- callGeneric(as(x, "DataFrameConstr"), , j, value=value)
+              y <- callGeneric(as(x, "CheckedFrame"), , j, value=value)
               new(Class, y)
             }, where=where)
   
   setMethod("[<-", c(x=Class, i="ANY", j="missing"),
             function(x, i, j, value) {
-              y <- callGeneric(as(x, "DataFrameConstr"), i, , value=value)
+              y <- callGeneric(as(x, "CheckedFrame"), i, , value=value)
               new(Class, y)
             }, where=where)
   
   setMethod("[<-", c(x=Class, i="ANY", j="ANY"),
             function(x, i, j, value) {
-              y <- callGeneric(as(x, "DataFrameConstr"), i, j, value=value)
+              y <- callGeneric(as(x, "CheckedFrame"), i, j, value=value)
               new(Class, y)
             }, where=where)
 
   setMethod("[[<-", c(x=Class, i="ANY", j="missing", value="ANY"),
             function(x, i, j, value) {
-              y <- callGeneric(as(x, "DataFrameConstr"), i, , value=value)
+              y <- callGeneric(as(x, "CheckedFrame"), i, , value=value)
               new(Class, y)
             }, where=where)
   
   setMethod("[[<-", c(x=Class, i="ANY", j="ANY", value="ANY"),
             function(x, i, j, value) {
-              y <- callGeneric(as(x, "DataFrameConstr"), i, j, value=value)
+              y <- callGeneric(as(x, "CheckedFrame"), i, j, value=value)
               new(Class, y)
           }, where=where)
 
@@ -187,27 +181,27 @@ constrained_data_frame <- function(Class, columns=character(),
             }, where=where)
 
   # colnames<-
-  setMethod("colnames<-", "DataFrameConstr",
+  setMethod("colnames<-", "CheckedFrame",
             function(x, value) {
               y <- callNextMethod()
               new(Class, y)
             }, where=where)
   
   # rownames<-
-  setMethod("rownames<-", c(x = "DataFrameConstr"), 
+  setMethod("rownames<-", c(x = "CheckedFrame"), 
             function(x, value) {
               callNextMethod()
             }, where=where)
   
   # names<-
-  setMethod("names<-", "DataFrameConstr",
+  setMethod("names<-", "CheckedFrame",
             function(x, value) {
               y <- callNextMethod()
               new(Class, y)
             }, where=where)
 
   # names<-
-  setMethod("dimnames<-", c(x="DataFrameConstr", value="list"),
+  setMethod("dimnames<-", c(x="CheckedFrame", value="list"),
             function(x, value) {
               y <- callNextMethod()
               new(Class, y)
@@ -217,7 +211,7 @@ constrained_data_frame <- function(Class, columns=character(),
         function(from, to) new(Class, from), where=where)
   
   .f <- function(...) {
-    new(Class, ...)
+    new(Class, data.frame(...))
   }
   invisible(.f)
 }

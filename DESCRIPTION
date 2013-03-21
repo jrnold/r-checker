@@ -1,12 +1,11 @@
-Package: DataFrameConstr
+Package: checker
 Maintainer: Jeffrey Arnold <jeffrey.arnold@gmail.com>
 Author: Jeffrey Arnold <jeffrey.arnold@gmail.com>
 Version: 1.1-1
 License: GPL-3
-Title: Constrained data frames and homogenous list classes
-Description: Defines two utility S4 classes. DataFrameConstr: extends data
-    frames with column and general constraints. HomogList: a list in which all
-    elements must have the same class.
+Title: Data frames with column and table constraints
+Description: Classes that add column and table constraints
+    to data frames.
 Depends:
     methods,
     R (>= 2.15.0)
@@ -19,5 +18,5 @@ Collate:
     'subclass_homog_list.R'
     'class-DataFrameConstr.R'
     'constrained_data_frame.R'
-URL: https://github.com/jrnold/DataFrameConstr
-BugReports: https://github.com/jrnold/DataFrameConstr
+URL: https://github.com/jrnold/r-checker
+BugReports: https://github.com/jrnold/r-checker
