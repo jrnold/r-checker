@@ -100,6 +100,7 @@ setMethod("initialize", "HList",
           function(.Object, x=list(), classtype="ANY") {
             .Object <- callNextMethod(.Object, x)
             .Object@classtype <- classtype
+            validObject(.Object)
             .Object
           })
 
