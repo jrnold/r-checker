@@ -2,7 +2,6 @@
 #' @include hlist_class.R
 #' @include class-TableChecks.R
 #' @export CheckedFrame
-#' @export validate_data_frame
 #' @exportClass CheckedFrame
 #' @exportMethod [<-
 #' @exportMethod [[<-
@@ -92,12 +91,17 @@ NULL
 #' @aliases dimnames<-,CheckedFrame,list-method
 #' @aliases initialize,CheckedFrame-method
 #' @examples
+#' checks <- TableChecks(columns =
+#'                       ColumnCheckList(a = ColumnChecks(classtype="numeric",
+#'                                         constraints =
+#'                                         FunctionList(function(x) x > 0)),
+#'                                       b = ColumnChecks(classtype="ANY"),
+#'                                       c = ColumnChecks(classtype="factor")))
 #' foo <- 
 #'   CheckedFrame(data.frame(a = runif(3), b = runif(3), c = letters[1:3]),
-#'                   columns = c(a = "numeric", b = "ANY", c = "factor"),
-#'                   constraints = list(function(x) {x$a > 0}))
+#'                constraints = checks)
 #' # works just like a normal data.frame
-#' print(foo)
+#' show(foo)
 #' summary(foo)
 #' # errors
 #' try(foo$a <- as.character(foo$a))
@@ -119,7 +123,7 @@ setValidity("CheckedFrame",
 
 setMethod("show", "CheckedFrame",
           function(object) {
-            cat(sprintf("An object of class %s\n", dQuote(class(x))))
+            cat(sprintf("An object of class %s\n", dQuote(class(object))))
             print(as(object, "data.frame"))
           })
 
@@ -138,21 +142,21 @@ setMethod("[", c(x="CheckedFrame", i="missing", j="missing"),
 setMethod("[", c(x="CheckedFrame", i = "missing", j = "ANY"), 
           function(x, i, j, drop=TRUE) {
             y <- data.frame(x)[ , j, drop=drop]
-            tryCatch(new("CheckedFrame", y, x@columns, x@exclusive, x@constraints),
+            tryCatch(CheckedFrame(y, constraints=x@constraints),
                      error = function(e) y)
           })
 
 setMethod("[", c(x="CheckedFrame", i = "ANY", j = "missing"), 
           function(x, i, j, drop = TRUE) {
             y <- as(x, "data.frame")[i, , drop=drop]
-            tryCatch(new("CheckedFrame", y, x@columns, x@exclusive, x@constraints),
+            tryCatch(CheckedFrame(y, constraints=x@constraints),
                      error = function(e) y)
           })
 
 setMethod("[", c(x="CheckedFrame", i = "ANY", j = "ANY"), 
           function(x, i, j, drop = TRUE) {
             y <- as(x, "data.frame")[i, j, drop=drop]
-            tryCatch(new("CheckedFrame", y, x@columns, x@exclusive, x@constraints),
+            tryCatch(CheckedFrame(y, constraints=x@constraints),
                      error = function(e) y)
           })
 
@@ -162,25 +166,25 @@ setMethod("[", c(x="CheckedFrame", i = "ANY", j = "ANY"),
 setMethod("[<-", c(x="CheckedFrame", i="missing", j="missing"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), , ,value=value)
-            new("CheckedFrame", y,  x@columns, x@exclusive, x@constraints)
+            CheckedFrame(y, constraints=x@constraints)
           })
 
 setMethod("[<-", c(x="CheckedFrame", i="missing", j="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), , j,value=value)
-            new("CheckedFrame", y,  x@columns, x@exclusive, x@constraints)
+            CheckedFrame(y, constraints=x@constraints)
           })
 
 setMethod("[<-", c(x="CheckedFrame", i="ANY", j="missing"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, ,value=value)
-            new("CheckedFrame", y,  x@columns, x@exclusive, x@constraints)
+            CheckedFrame(y, constraints=x@constraints)
           })
 
 setMethod("[<-", c(x="CheckedFrame", i="ANY", j="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, j,value=value)
-            new("CheckedFrame", y,  x@columns, x@exclusive, x@constraints)
+            CheckedFrame(y, constraints=x@constraints)
           })
 
 
@@ -189,34 +193,34 @@ setMethod("[<-", c(x="CheckedFrame", i="ANY", j="ANY"),
 setMethod("[[<-", c(x="CheckedFrame", i="ANY", j="missing", value="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, value=value)
-            new("CheckedFrame", y, x@columns, x@exclusive, x@constraints)
+            CheckedFrame(y, constraints=x@constraints)
           })
 
 setMethod("[[<-", c(x="CheckedFrame", i="ANY", j="ANY", value="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, j, value=value)
-            new("CheckedFrame", y, x@columns, x@exclusive, x@constraints)
+            CheckedFrame(y, constraints=x@constraints)
           })
 
 # $<- method
 setMethod("$<-", "CheckedFrame",
           function(x, name, value) {
             y <- callNextMethod()
-            new("CheckedFrame", y, x@columns, x@exclusive, x@constraints)
+            CheckedFrame(y, constraints=x@constraints)
           })
 
 # rbind2 method
 setMethod("rbind2", "CheckedFrame",
           function(x, y, ...) {
             z <- rbind(as(x, "data.frame"), as(y, "data.frame"), ...)
-            new("CheckedFrame", z, x@columns, x@exclusive, x@constraints)
+            CheckedFrame(z, constraints=x@constraints)
           })
 
 # cbind2 method
 setMethod("cbind2", "CheckedFrame",
           function(x, y, ...) {
             z <- cbind(as(x, "data.frame"), as(y, "data.frame"), ...)
-            new("CheckedFrame", z, x@columns, x@exclusive, x@constraints)
+            CheckedFrame(z, constraints=x@constraints)
           })
 
 # colnames<-
