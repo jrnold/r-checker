@@ -30,6 +30,7 @@ showClass("ColumnCheckList")
 }
 \seealso{
   Other Check.objects: \code{\link{ColumnChecks}},
-  \code{\link{ColumnChecks}}, \code{\link{TableChecks}}
+  \code{\link{ColumnChecks}}, \code{\link{TableChecks}},
+  \code{\link{TableChecks}}
 }
 

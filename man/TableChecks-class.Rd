@@ -4,9 +4,12 @@
 \alias{TableChecks-class}
 \title{Class \code{ColumnChecks}}
 \usage{
-  TableChecks(...)
+  TableChecks(columns = ColumnCheckList(), ...)
 }
 \arguments{
+  \item{columns}{\code{\linkS4class{ColumnCheckList}}
+  Column level checks}
+
   \item{...}{Data to include in the new object. Named
   arguments correspond to slots in the class definition.}
 }

@@ -107,6 +107,7 @@ ColumnCheckList <- function(...) {
   new("ColumnCheckList", nlist(...))
 }
 
+#' @rdname TableChecks-class
 #' @docType class
 #' @aliases TableChecks-class
 #' @aliases TableChecks
@@ -115,6 +116,7 @@ ColumnCheckList <- function(...) {
 #' @description An object containing constraint checks intended
 #' to be used on a \code{data.frame}.
 #'
+#' @param columns \code{\linkS4class{ColumnCheckList}} Column level checks
 #' @param ... Data to include in the new object. Named arguments
 #' correspond to slots in the class definition.
 #' 
@@ -133,16 +135,19 @@ ColumnCheckList <- function(...) {
 #' @family Check objects
 #' @examples
 #' showClass("TableChecks")
-TableChecks <-
-  setClass("TableChecks",
-           representation(columns = "ColumnCheckList",
-                          exclusive = "logical",
-                          ordered = "logical",
-                          exclude = "character",
-                          constraints = "FunctionList"),
-           prototype(columns = ColumnCheckList(),
-                     exclusive = FALSE,
-                     ordered = FALSE,
-                     exclude = character(),
-                     constraints = FunctionList()))
+setClass("TableChecks",
+         representation(columns = "ColumnCheckList",
+                        exclusive = "logical",
+                        ordered = "logical",
+                        exclude = "character",
+                        constraints = "FunctionList"),
+         prototype(columns = ColumnCheckList(),
+                   exclusive = FALSE,
+                   ordered = FALSE,
+                   exclude = character(),
+                   constraints = FunctionList()))
 
+#' @rdname TableChecks-class
+TableChecks <- function(columns = ColumnCheckList(), ...) {
+  new("TableChecks", columns = columns, ...)
+}
