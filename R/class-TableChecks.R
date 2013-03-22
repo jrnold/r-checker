@@ -12,6 +12,7 @@ empty_character <- function(x) {
   (is.na(x) | x == "")
 }
 
+#' @rdname ColumnChecks-class
 #' @docType class
 #' @aliases ColumnChecks-class
 #' @aliases ColumnChecks
@@ -27,6 +28,7 @@ empty_character <- function(x) {
 #' \item list of arbitrary constraints
 #' }
 #'
+#' @param classtype Name of to class which the column must belong.
 #' @param ... Data to be included in the object.
 #' 
 #' @section Objects from the Class:
@@ -35,25 +37,29 @@ empty_character <- function(x) {
 #'
 #' @section Slots:
 #' \describe{
-#' \item{\code{type}}{\code{character}. Class type of object to be checked.}
+#' \item{\code{classtype}}{\code{character}. Class type of object to be checked.}
 #' \item{\code{missings}}{\code{logical}. If \code{FALSE}, then no \code{NA} values are allowed in the object to be checked.}
-#' \item{\code{uniqueness}}{\code{logical}. If \code{FALSE}, then duplicate values are allowed in the object to be checked.}
+#' \item{\code{unique}}{\code{logical}. If \code{FALSE}, then duplicate values are allowed in the object to be checked.}
 #'     \item{\code{constraints}:}{\code{"FunctionList"}. Additional arbitrary constraints. Each function must return either \code{TRUE} if the constraint is satisfied, or \code{FALSE} if it is violated. These functions can also return vectors, in which case, the constraint is violated if there is any \code{FALSE} value.}
 #' }
 #'
 #' @family Check objects
 #' @examples
 #' showClass("ColumnChecks")
-ColumnChecks <-
-  setClass("ColumnChecks",
-           representation(classtype = "character",
-                          missings = "logical",
-                          unique = "logical",
-                          constraints = "FunctionList"),
-           prototype(classtype = "ANY",
-                     missings = TRUE,
-                     unique = FALSE,
-                     constraints = FunctionList()))
+setClass("ColumnChecks",
+         representation(classtype = "character",
+                        missings = "logical",
+                        unique = "logical",
+                        constraints = "FunctionList"),
+         prototype(classtype = "ANY",
+                   missings = TRUE,
+                   unique = FALSE,
+                   constraints = FunctionList()))
+
+#' @rdname ColumnChecks-class
+ColumnChecks <- function(classtype = "ANY", ...) {
+  new("ColumnChecks", classtype=classtype, ...)
+}
 
 #' @rdname ColumnCheckList-class
 #' @docType class

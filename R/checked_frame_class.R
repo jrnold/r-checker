@@ -24,30 +24,27 @@ proto_data_frame <- function(checks) {
 #' \code{CheckedFrame}.
 #'
 #' @param Class \code{character} Name of the new class.
-#' @param constraints \code{TableChecks}. Contains the constraints that
+#' @param checks \code{TableChecks}. Contains the constraints that 
 #' will be used to check the validity of data frames in this class.
+#' @param where Passed to \code{\link{setClass}}. The environment
+#' in which to store the definition.
 #' @return Invisibly returns a constructor function for the
 #' new class.
-checked_frame_class <- function(Class, columns=character(),
-                                     exclusive=FALSE,
-                                     constraints=list(),
-                                     where=topenv(parent.frame())) {
+checked_frame_class <- function(Class,
+                                checks = checks(),
+                                where=topenv(parent.frame())) {
 
-  constraints <- do.call(FunctionList, constraints)
+  checks <- do.call(FunctionList, checks)
   
   setClass(Class, contains="CheckedFrame",
-           prototype=
-           prototype(x = new_data_frame(columns),
-             
-             columns = columns,
-             exclusive = exclusive,
-             constraints = constraints),
+           prototype = prototype(x = proto_data_frame(checks),
+             checks = checks),
            where=where)
   
   setMethod("initialize", Class,
-            function(.Object, x=new_data_frame(columns)) {
+            function(.Object, x=proto_data_frame(checks)) {
               callNextMethod(.Object, x,
-                             constraints = constraints)
+                             checks = checks)
             }, where=where)
 
   setMethod("show", Class,
@@ -152,6 +149,13 @@ checked_frame_class <- function(Class, columns=character(),
               new(Class, z)
             }, where=where)
 
+  # names<-
+  setMethod("names<-", "CheckedFrame",
+            function(x, value) {
+              y <- callNextMethod()
+              new(Class, y)
+            }, where=where)
+  
   # colnames<-
   setMethod("colnames<-", "CheckedFrame",
             function(x, value) {
@@ -165,13 +169,6 @@ checked_frame_class <- function(Class, columns=character(),
               callNextMethod()
             }, where=where)
   
-  # names<-
-  setMethod("names<-", "CheckedFrame",
-            function(x, value) {
-              y <- callNextMethod()
-              new(Class, y)
-            }, where=where)
-
   # names<-
   setMethod("dimnames<-", c(x="CheckedFrame", value="list"),
             function(x, value) {

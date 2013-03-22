@@ -159,5 +159,6 @@ check_constraints.data.frame.TableChecks <- function(object, checks) {
 }
 
 #' @rdname check_constraints-methods
+#' @aliases check_constraints,data.frame,TableChecks-method
 setMethod("check_constraints", c("data.frame", "TableChecks"),
           check_constraints.data.frame.TableChecks)

@@ -22,7 +22,7 @@
 \alias{rownames<-,CheckedFrame,ANY-method}
 \alias{rownames<-,CheckedFrame,NULL-method}
 \alias{show,CheckedFrame-method}
-\title{Data Frame with constraints}
+\title{Class \code{CheckedFrame}}
 \usage{
   CheckedFrame(...)
 }
@@ -37,15 +37,9 @@
 }
 \section{Slots}{
   \describe{ \item{\code{.Data}:}{Object of class
-  \code{"list"}} \item{\code{columns}}{Named
-  \code{character} vector. The names are the column names,
-  and the values are the required classes of the column.}
-  \item{\code{exclusive}}{Object of class \code{logical}.
-  If \code{TRUE}, then the data frame cannot contain any
-  columns other than those in \code{columns}}
-  \item{\code{constraints}}{Object of class \code{list}
-  containing \code{function} elements.  Each function in
-  the list should take one argument, and return
+  \code{"list"}} \item{\code{checks}}{Object of class
+  \code{list} containing \code{function} elements.  Each
+  function in the list should take one argument, and return
   \code{logical}.} \item{\code{names}:}{Object of class
   \code{"character"} Column names}
   \item{\code{row.names}:}{Object of class
@@ -61,20 +55,21 @@
   \code{"CheckedFrame"} object.
 
   \describe{ \item{[<-}{\code{signature(x =
-  "CheckedFrame")}: } \item{[[<-}{\code{signature(x =
   "CheckedFrame")}: } \item{[}{\code{signature(object =
-  "CheckedFrame")}: Returns \linkS4class{CheckedFrame} if
-  the returned object is valid, otherwise returns a
-  \code{data.frame}.  } \item{$<-}{\code{signature(x =
+  "CheckedFrame")}: Returns a
+  \code{"\linkS4class{CheckedFrame}"} object if the
+  returned object is valid, otherwise returns a
+  \code{data.frame}.} \item{[[<-}{\code{signature(x =
+  "CheckedFrame")}: } \item{$<-}{\code{signature(x =
   "CheckedFrame")}: } \item{cbind2}{\code{signature(x =
-  "CheckedFrame")}:} \item{rbind2}{\code{signature(x =
-  "CheckedFrame")}: ... } \item{names<-}{\code{signature(x
-  = "CheckedFrame")}: ... }
+  "CheckedFrame")}: Use this instead of \code{cinbd}.}
   \item{colnames<-}{\code{signature(object =
   "CheckedFrame")}: }
-  \item{rownames<-}{\code{signature(object =
-  "CheckedFrame")}: }
   \item{dimnames<-}{\code{signature(object =
+  "CheckedFrame")}: } \item{names<-}{\code{signature(x =
+  "CheckedFrame")}: } \item{rbind2}{\code{signature(x =
+  "CheckedFrame")}: Use this instead of \code{rbind}.}
+  \item{rownames<-}{\code{signature(object =
   "CheckedFrame")}: } }
 }
 
@@ -82,12 +77,17 @@
   \describe{ \item{\code{data.frame}}{Directly.} }
 }
 \examples{
+checks <- TableChecks(columns =
+                      ColumnCheckList(a = ColumnChecks(classtype="numeric",
+                                        constraints =
+                                        FunctionList(function(x) x > 0)),
+                                      b = ColumnChecks(classtype="ANY"),
+                                      c = ColumnChecks(classtype="factor")))
 foo <-
   CheckedFrame(data.frame(a = runif(3), b = runif(3), c = letters[1:3]),
-                  columns = c(a = "numeric", b = "ANY", c = "factor"),
-                  constraints = list(function(x) {x$a > 0}))
+               checks = checks)
 # works just like a normal data.frame
-print(foo)
+show(foo)
 summary(foo)
 # errors
 try(foo$a <- as.character(foo$a))

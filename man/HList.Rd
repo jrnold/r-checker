@@ -22,13 +22,10 @@
 }
 \description{
   An S4 subclass of \code{list} in which all elements of
-  the list to be the same class.
-}
-\details{
-  This is similar to the 'atomic lists' in R in that all
-  elements of the vector must be the same class, but the
-  \code{HList} supports arbitrary classes. \code{NULL}
-  values are also valid.
+  the list to be the same class. This is similar to the
+  'atomic lists' in R in that all elements of the vector
+  must be the same class, but the \code{HList} supports
+  arbitrary classes. \code{NULL} values are also valid.
 }
 \section{Slots}{
   \describe{ \item{\code{.Data}}{Object of class
@@ -49,14 +46,16 @@
   \item{show}{\code{signature(object = "HList")}: ... } }
 }
 \examples{
-foo <- HList(list(sum=sum, max=max, min=min), "function")
-print(foo)
-x <- 1:10
-lapply(foo, function(f) f(x))
-foo[["mean"]] <- mean
-print(foo)
-# error
-try(foo[["a"]] <- 1)
+# This is valid with lists
+foo <- list(a=1:10, b=c(1, 5))
+foo[["c"]] <- c("a", "z")
+# # But would not be valid with a homogenous list
+foo <- HList(list(a=1:10, b=c(1, 5)), "numeric")
+try(foo[["c"]] <- c("a", "z"))
+foo[["c"]] <- c(1, 4, 10)
+}
+\seealso{
+  \code{\link{hlist_class}},
 }
 \keyword{classes}
 

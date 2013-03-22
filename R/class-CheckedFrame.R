@@ -14,58 +14,6 @@
 #' @exportMethod names<-
 NULL
 
-#' Data Frame with constraints
-#'
-#' Creates a new object directly extended \code{\link{data.frame}},
-#' but with constrains that require columns. This class can be used
-#' to ensure that data frames have a specific structure.
-#'
-#' @param ... Data to include in the object.
-#' 
-#' @section Slots:
-#' 
-#' \describe{
-#' \item{\code{.Data}:}{Object of class \code{"list"}}
-#' \item{\code{columns}}{Named \code{character} vector. The names are the
-#' column names, and the values are the required classes of the column.}
-#' \item{\code{exclusive}}{Object of class \code{logical}. If \code{TRUE},
-#' then the data frame cannot contain any columns other than those
-#' in \code{columns}}
-#' \item{\code{constraints}}{Object of class \code{list} containing \code{function}
-#' elements.  Each function in the list should take one argument, and return \code{logical}.}
-#' \item{\code{names}:}{Object of class \code{"character"} Column names}
-#' \item{\code{row.names}:}{Object of class \code{"data.frameRowLabels"} Row names}
-#' \item{\code{.S3Class}:}{Object of class \code{"character"} Name of \code{S3Class}}
-#' }
-#'
-#' @section Methods:
-#'
-#' Methods commonly used with data frames are defined to return \code{"CheckedFrame"}
-#' objects where appropriate, or throw errors if they would create an invalid
-#' \code{"CheckedFrame"} object.
-#'
-#' \describe{
-#'   \item{[<-}{\code{signature(x = "CheckedFrame")}: }
-#'   \item{[[<-}{\code{signature(x = "CheckedFrame")}: }
-#'   \item{[}{\code{signature(object = "CheckedFrame")}:
-#'   Returns \linkS4class{CheckedFrame} if the returned object is valid,
-#'   otherwise returns a \code{data.frame}.
-#'   }
-#'   \item{$<-}{\code{signature(x = "CheckedFrame")}: }
-#'   \item{cbind2}{\code{signature(x = "CheckedFrame")}:}
-#'   \item{rbind2}{\code{signature(x = "CheckedFrame")}: ... }
-#'   \item{names<-}{\code{signature(x = "CheckedFrame")}: ... }
-#'   \item{colnames<-}{\code{signature(object = "CheckedFrame")}: }
-#'   \item{rownames<-}{\code{signature(object = "CheckedFrame")}: }
-#'   \item{dimnames<-}{\code{signature(object = "CheckedFrame")}: }
-#' }
-#'
-#' @section Extends:
-#'
-#' \describe{
-#' \item{\code{data.frame}}{Directly.}
-#' }
-#' 
 #' @docType class
 #' @keywords classes
 #' @aliases CheckedFrame-class
@@ -90,6 +38,53 @@ NULL
 #' @aliases names<-,CheckedFrame,ANY-method
 #' @aliases dimnames<-,CheckedFrame,list-method
 #' @aliases initialize,CheckedFrame-method
+#'
+#' @title Class \code{CheckedFrame}
+#'
+#' @description Creates a new object directly extended \code{\link{data.frame}},
+#' but with constrains that require columns. This class can be used
+#' to ensure that data frames have a specific structure.
+#'
+#' @param ... Data to include in the object.
+#' 
+#' @section Slots:
+#' 
+#' \describe{
+#' \item{\code{.Data}:}{Object of class \code{"list"}}
+#' \item{\code{checks}}{Object of class \code{list} containing \code{function}
+#' elements.  Each function in the list should take one argument, and return \code{logical}.}
+#' \item{\code{names}:}{Object of class \code{"character"} Column names}
+#' \item{\code{row.names}:}{Object of class \code{"data.frameRowLabels"} Row names}
+#' \item{\code{.S3Class}:}{Object of class \code{"character"} Name of \code{S3Class}}
+#' }
+#'
+#' @section Methods:
+#'
+#' Methods commonly used with data frames are defined to return \code{"CheckedFrame"}
+#' objects where appropriate, or throw errors if they would create an invalid
+#' \code{"CheckedFrame"} object.
+#'
+#' \describe{
+#'   \item{[<-}{\code{signature(x = "CheckedFrame")}: }
+#'   \item{[}{\code{signature(object = "CheckedFrame")}:
+#'   Returns a \code{"\linkS4class{CheckedFrame}"} object if the returned object is valid,
+#'   otherwise returns a \code{data.frame}.}
+#'   \item{[[<-}{\code{signature(x = "CheckedFrame")}: }
+#'   \item{$<-}{\code{signature(x = "CheckedFrame")}: }
+#'   \item{cbind2}{\code{signature(x = "CheckedFrame")}: Use this instead of \code{cinbd}.}
+#'   \item{colnames<-}{\code{signature(object = "CheckedFrame")}: }
+#'   \item{dimnames<-}{\code{signature(object = "CheckedFrame")}: }
+#'   \item{names<-}{\code{signature(x = "CheckedFrame")}: }
+#'   \item{rbind2}{\code{signature(x = "CheckedFrame")}: Use this instead of \code{rbind}.}
+#'   \item{rownames<-}{\code{signature(object = "CheckedFrame")}: }
+#' }
+#'
+#' @section Extends:
+#'
+#' \describe{
+#' \item{\code{data.frame}}{Directly.}
+#' }
+#' 
 #' @examples
 #' checks <- TableChecks(columns =
 #'                       ColumnCheckList(a = ColumnChecks(classtype="numeric",
@@ -99,7 +94,7 @@ NULL
 #'                                       c = ColumnChecks(classtype="factor")))
 #' foo <- 
 #'   CheckedFrame(data.frame(a = runif(3), b = runif(3), c = letters[1:3]),
-#'                constraints = checks)
+#'                checks = checks)
 #' # works just like a normal data.frame
 #' show(foo)
 #' summary(foo)
@@ -112,13 +107,13 @@ NULL
 #' try(foo$d <- runif(3))
 CheckedFrame <-
   setClass("CheckedFrame", contains="data.frame",
-           representation(constraints = "TableChecks"),
+           representation(checks = "TableChecks"),
            prototype(data.frame(),
-                     constraints = TableChecks()))
+                     checks = TableChecks()))
 
 setValidity("CheckedFrame",
             function(object) {
-              check_constraints(object, object@constraints)
+              check_constraints(object, object@checks)
             })
 
 setMethod("show", "CheckedFrame",
@@ -130,7 +125,7 @@ setMethod("show", "CheckedFrame",
 ###Methods
 
 # [-method
-setMethod("[", c(x="CheckedFrame", i="missing", j="missing"),
+setMethod("[", c(x="CheckedFrame", i="missing", j="missing", drop="ANY"),
           function(x, i, j, drop=TRUE) {
             if (drop && ncol(x) == 1) {
               x[[1]]
@@ -139,24 +134,25 @@ setMethod("[", c(x="CheckedFrame", i="missing", j="missing"),
             }
           })
 
-setMethod("[", c(x="CheckedFrame", i = "missing", j = "ANY"), 
+setMethod("[", c(x="CheckedFrame", i = "missing", j = "ANY", drop="ANY"), 
           function(x, i, j, drop=TRUE) {
             y <- data.frame(x)[ , j, drop=drop]
-            tryCatch(CheckedFrame(y, constraints=x@constraints),
+            tryCatch(CheckedFrame(y, checks=x@checks),
                      error = function(e) y)
           })
 
-setMethod("[", c(x="CheckedFrame", i = "ANY", j = "missing"), 
+setMethod("[", c(x="CheckedFrame", i = "ANY", j = "missing", drop="ANY"),
           function(x, i, j, drop = TRUE) {
+            print("foo")
             y <- as(x, "data.frame")[i, , drop=drop]
-            tryCatch(CheckedFrame(y, constraints=x@constraints),
+            tryCatch(CheckedFrame(y, checks=x@checks),
                      error = function(e) y)
           })
 
-setMethod("[", c(x="CheckedFrame", i = "ANY", j = "ANY"), 
+setMethod("[", c(x="CheckedFrame", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, drop = TRUE) {
             y <- as(x, "data.frame")[i, j, drop=drop]
-            tryCatch(CheckedFrame(y, constraints=x@constraints),
+            tryCatch(CheckedFrame(y, checks=x@checks),
                      error = function(e) y)
           })
 
@@ -166,25 +162,25 @@ setMethod("[", c(x="CheckedFrame", i = "ANY", j = "ANY"),
 setMethod("[<-", c(x="CheckedFrame", i="missing", j="missing"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), , ,value=value)
-            CheckedFrame(y, constraints=x@constraints)
+            CheckedFrame(y, checks=x@checks)
           })
 
 setMethod("[<-", c(x="CheckedFrame", i="missing", j="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), , j,value=value)
-            CheckedFrame(y, constraints=x@constraints)
+            CheckedFrame(y, checks=x@checks)
           })
 
 setMethod("[<-", c(x="CheckedFrame", i="ANY", j="missing"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, ,value=value)
-            CheckedFrame(y, constraints=x@constraints)
+            CheckedFrame(y, checks=x@checks)
           })
 
 setMethod("[<-", c(x="CheckedFrame", i="ANY", j="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, j,value=value)
-            CheckedFrame(y, constraints=x@constraints)
+            CheckedFrame(y, checks=x@checks)
           })
 
 
@@ -193,42 +189,50 @@ setMethod("[<-", c(x="CheckedFrame", i="ANY", j="ANY"),
 setMethod("[[<-", c(x="CheckedFrame", i="ANY", j="missing", value="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, value=value)
-            CheckedFrame(y, constraints=x@constraints)
+            CheckedFrame(y, checks=x@checks)
           })
 
 setMethod("[[<-", c(x="CheckedFrame", i="ANY", j="ANY", value="ANY"),
           function(x, i, j, value) {
             y <- callGeneric(data.frame(x), i, j, value=value)
-            CheckedFrame(y, constraints=x@constraints)
+            CheckedFrame(y, checks=x@checks)
           })
 
 # $<- method
 setMethod("$<-", "CheckedFrame",
           function(x, name, value) {
             y <- callNextMethod()
-            CheckedFrame(y, constraints=x@constraints)
+            CheckedFrame(y, checks=x@checks)
           })
 
 # rbind2 method
 setMethod("rbind2", "CheckedFrame",
           function(x, y, ...) {
             z <- rbind(as(x, "data.frame"), as(y, "data.frame"), ...)
-            CheckedFrame(z, constraints=x@constraints)
+            CheckedFrame(z, checks=x@checks)
           })
 
 # cbind2 method
 setMethod("cbind2", "CheckedFrame",
           function(x, y, ...) {
             z <- cbind(as(x, "data.frame"), as(y, "data.frame"), ...)
-            CheckedFrame(z, constraints=x@constraints)
+            CheckedFrame(z, checks=x@checks)
           })
 
-# colnames<-
-setMethod("colnames<-", "CheckedFrame",
+# names<-
+setMethod("names<-", "CheckedFrame",
           function(x, value) {
             y <- callNextMethod()
             validObject(y)
             y
+          })
+
+
+# colnames<-
+setMethod("colnames<-", "CheckedFrame",
+          function(x, value) {
+            names(x) <- value
+            x
           })
 
 # rownames<-
@@ -246,21 +250,12 @@ setMethod("rownames<-", c(x = "CheckedFrame", value = "NULL"),
             x
           })
 
-# names<-
-setMethod("names<-", "CheckedFrame",
-          function(x, value) {
-            y <- callNextMethod()
-            validObject(y)
-            y
-          })
-
 
 # names<-
 setMethod("dimnames<-", c(x="CheckedFrame", value="list"),
           function(x, value) {
             rownames(x) <- value[[1]]
             colnames(x) <- value[[2]]
-            validObject(x)
             x
           })
 

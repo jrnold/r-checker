@@ -1,11 +1,13 @@
 #' @include package.R
 #' @include class-HList.R
 #' @export hlist_class
+#' @exportClass FunctionList
+#' @export FunctionList
 NULL
 
 #' Create a subclass of \code{HList}
 #'
-#' Create a subclass of \code{HList}, which restricts elements
+#' Create a subclass of \code{\linkS4class{HList}}, which restricts elements
 #' of the list to be a specified class.
 #'
 #' @param Class \code{character} string name of the new class
@@ -17,14 +19,16 @@ NULL
 #'
 #' @return \code{function} with usage \code{function(...)}, which
 #' will create objects of the newly defined class.
-#' 
+#'
+#' @seealso \code{"\linkS4class{FunctionList}"} for a subclass 
+#' created with this function used in this section. \code{\linkS4class{HList}}.
 #' @examples
 #' NumericList <- 
 #'   hlist_class("NumericList", "numeric")
 #' # creates a new class "NumericList"
 #' showClass("NumericList")
 #' # Create a new object of class NumericList
-#' foo <- NumericList(list(a=1, b=2))
+#' foo <- NumericList(a=1, b=2)
 #' print(foo)
 #' foo[["c"]] <- 3
 #' print(foo)
@@ -32,6 +36,15 @@ NULL
 #' try(foo[["c"]] <- 3)
 hlist_class <- function(Class, classtype="ANY",
                         where=topenv(parent.frame())) {
+
+  ## if (isClass(Class, where=where)) {
+  ##   print("Class  exists")
+  ##   removeClass(Class, where=where)
+  ##   print(isClass(Class, where=where))
+  ## } else {
+  ##   print("Class does not exist")
+  ## }
+  
   setClass(Class,
            contains="HList",
            prototype=prototype(list(), classtype=classtype),
@@ -126,7 +139,39 @@ hlist_class <- function(Class, classtype="ANY",
   invisible(.f)
 }
 
-# Used later
+#' @docType class
+#' @aliases FunctionList
+#' @aliases FunctionList-class
+#' 
+#' @title List of Functions
+#'
+#' @description A class which is a list of functions. This
+#' is a subclass of \code{"\linkS4class{HList}"}, and was
+#' itself created using the function \code{\link{hlist_class}}.
+#'
+#' @param ... Objects of class \code{function}.
+#'
+#' @section Extends:
+#'
+#' \describe{
+#' \item{\code{HList}}{directly}
+#' }
+#'
+#' @section Slots:
+#'  \describe{
+#'    \item{\code{.Data}:}{\code{"list"}}
+#'    \item{\code{classtype}:}{\code{"character"} Always equal to \code{"function"} in this class.}
+#'    \item{\code{names}:}{\code{"character"}}
+#'  }
+#'
+#' @seealso \code{\link{hlist_class}}, \code{\linkS4class{HList}}, 
+#' @examples
+# The code used to create it
+# FunctionList <- hlist_class("FunctionList", "function")
+#' flist <- FunctionList(sum = sum, mean=mean)
+#' flist2 <- c(flist, list(max=max))
+#' x <- rnorm(35)
+#' lapply(flist2, function(f) f(x))
+#' # cannot add non-functions to it
+#' try(flist[["foo"]] <- 1)
 FunctionList <- hlist_class("FunctionList", "function")
-
-

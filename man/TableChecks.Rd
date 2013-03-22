@@ -47,6 +47,7 @@ showClass("TableChecks")
 }
 \seealso{
   Other Check.objects: \code{\link{ColumnCheckList}},
-  \code{\link{ColumnCheckList}}, \code{\link{ColumnChecks}}
+  \code{\link{ColumnCheckList}},
+  \code{\link{ColumnChecks}}, \code{\link{ColumnChecks}}
 }
 

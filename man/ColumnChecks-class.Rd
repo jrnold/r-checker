@@ -3,7 +3,13 @@
 \alias{ColumnChecks}
 \alias{ColumnChecks-class}
 \title{Class \code{ColumnChecks}}
+\usage{
+  ColumnChecks(classtype = "ANY", ...)
+}
 \arguments{
+  \item{classtype}{Name of to class which the column must
+  belong.}
+
   \item{...}{Data to be included in the object.}
 }
 \description{

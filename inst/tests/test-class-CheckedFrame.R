@@ -2,7 +2,7 @@ columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
 checks <- TableChecks(columns=columns)
 
 test_that("initialize works", {
-  foo <- new("CheckedFrame", data.frame(foo=1:10), constraints=checks)
+  foo <- new("CheckedFrame", data.frame(foo=1:10), checks=checks)
   expect_is(foo, "CheckedFrame")
 })
 
@@ -12,28 +12,27 @@ test_that("initialize checks validity", {
 })
 
 test_that("initialize works", {
-  foo <- CheckedFrame(data.frame(foo=1:10), constraints=checks)
+  foo <- CheckedFrame(data.frame(foo=1:10), checks=checks)
   expect_is(foo, "CheckedFrame")
 })
 
 ## Need to rewrite initialize
 ## test_that("initialize works with empty", {
-##   new("CheckedFrame", constraints=checks)
+##   new("CheckedFrame", checks=checks)
 ## })
 
 test_that("initialize wihout args works", {
   expect_is(new("CheckedFrame"), "CheckedFrame")
 })
 
-########
-
-foo <- CheckedFrame(data.frame(foo=1:10, bar=1:10),
-                    constraints=checks)
-
 #################
 # [ method
-
 context("[,DataFrameConstr-method")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns)
+foo <- CheckedFrame(data.frame(foo=1:10, bar=1:10),
+                    checks=checks)
 
 test_that("[,DataFrameConstr,missing,missing works", {
   expect_equal(foo[drop=FALSE], foo)
@@ -45,11 +44,11 @@ test_that("[,DataFrameConstr,missing,character with drop=missing  works", {
 
 test_that("[,DataFrameConstr,missing,character with drop=FALSE works", {
   expect_equal(foo[ , "foo", drop=FALSE],
-               CheckedFrame(data.frame(foo=1:10), constraints=checks))
+               CheckedFrame(data.frame(foo=1:10), checks=checks))
 })
 
 test_that("[,DataFrameConstr,integer,missing works", {
-  expected <- CheckedFrame(foo[1:2], constraints=foo@constraints)
+  expected <- CheckedFrame(foo[1:2], checks=foo@checks)
   expect_equal(foo[1:2], expected)
 })
 
@@ -63,7 +62,7 @@ test_that("[,DataFrameConstr,integer,missing: test #2", {
 
 test_that("[,DataFrameConstr,integer,mssing: test #3", {
   expected <- CheckedFrame(data.frame(foo=1:2, bar=1:2),
-                           constraints=foo@constraints)
+                           checks=foo@checks)
   expect_equal(foo[1:2, c("foo", "bar"), drop=FALSE], expected)
 })
 
@@ -72,6 +71,146 @@ test_that("[,DataFrameConstr drops to data.frame if invalid subset", {
   expect_equal(foo[, c("bar"), drop=FALSE], expected)
 })
 
+################################
+context("[<-,DataFramcConstr")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns)
+foo <- CheckedFrame(data.frame(foo=1:10, bar=1:10),
+                    checks=checks)
+
+test_that("[<- missing,missing works", {
+  foo[] <- 1
+  expected <- CheckedFrame(data.frame(foo=rep(1, 10),
+                                      bar=rep(1, 10)),
+                           checks=checks)
+  expect_equal(foo, expected)
+})
+
+test_that("[<- missing,missing throws error", {
+  expect_error(foo[] <- "a", "invalid class")
+})
+
+test_that("[<- missing,ANY throws error", {
+  expect_error(foo[1, ] <- "a", "invalid class")
+})
+
+test_that("[<- missing,ANY works", {
+  foo[["foo"]] <- 1
+  foo <- CheckedFrame(data.frame(foo=1, bar=1:10),
+                      checks=checks)
+})
+
+test_that("[<- ANY,missing works", {
+  foo[1:2, ] <- c(100, 200)
+  expected <- CheckedFrame(data.frame(foo=c(100, 200, 3:10),
+                                      bar=c(100, 200, 3:10)),
+                           checks=checks)
+  expect_equal(foo, expected)
+})
+
+test_that("[<- missing,ANY throws error", {
+  expect_error(foo[["foo"]] <- "a", "invalid class")
+})
+
+test_that("[<- ANY,ANY works", {
+  foo[1:2, "foo"] <- c(100, 200)
+  expected <- CheckedFrame(data.frame(foo=c(100, 200, 3:10),
+                                      bar=1:10),
+                           checks=checks)
+  expect_equal(foo, expected)
+})
+
+test_that("[<- missing,ANY throws error", {
+  expect_error(foo[1:2, "foo"] <- "a", "invalid class")
+})
 
 
+################################
+context("[[<-,DataFramcConstr")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns)
+foo <- CheckedFrame(data.frame(foo=1:10, bar=1:10),
+                    checks=checks)
+
+test_that("[[<- missing,missing error", {
+  expect_error(foo[[]] <- 1)
+})
+
+test_that("[[<- ANY,missing works", {
+  foo[["foo"]] <- 1
+  foo <- CheckedFrame(data.frame(foo=1, bar=1:10),
+                      checks=checks)
+})
+
+test_that("[[<- ANY,missing throws error", {
+  expect_error(foo[["foo"]] <- "a", "invalid class")
+})
+
+test_that("[[<- ANY,missing works", {
+  foo[[1, "foo"]] <- 100
+  expected <- CheckedFrame(data.frame(foo=c(100, 2:10),
+                                      bar=1:10),
+                           checks=checks)
+  expect_equal(foo, expected)
+})
+
+test_that("[[<- ANY,missing throws error", {
+  expect_error(foo[[1, "foo"]] <- "a", "invalid class")
+})
+
+#####################3
+context("$<- CheckedFrame")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns)
+foo <- CheckedFrame(data.frame(foo=1:10, bar=1:10),
+                    checks=checks)
+
+test_that("$<- works", {
+  foo$foo <- 1:10 * 2
+  expected <- CheckedFrame(data.frame(foo= (1:10 * 2), bar=1:10),
+                           checks=checks)
+  expect_equal(foo, expected)
+})
+
+test_that("$<- works", {
+  expect_error(foo$foo <- "a", "invalid class")
+})
+
+###########
+context("rbind CheckedFrame")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns)
+foo <- CheckedFrame(data.frame(foo=1:4, bar=5:8), checks=checks)
+
+test_that("rbind2 works", {
+  expected <- CheckedFrame(data.frame(foo=c(1:4, 9), bar=c(5:8, 10)), checks=checks)
+  expect_equal(rbind2(foo, data.frame(foo=9, bar=10)),
+              expected)
+})
+
+test_that("rbind2 throws error", {
+  expect_error(rbind2(foo, data.frame(foo="a", bar=10)), "invalid class")
+})
+
+###########
+context("cbind2 CheckedFrame")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns, exclude="baz")
+foo <- CheckedFrame(data.frame(foo=1:4, bar=5:8), checks=checks)
+
+test_that("cbind2 works", {
+  expected <- CheckedFrame(data.frame(foo=1:4, bar=5:8, qux=9:12),
+                           checks=checks)
+  expect_equal(cbind2(foo, data.frame(qux=9:12)),
+              expected)
+})
+
+test_that("cbind2 throws error", {
+  expect_error(cbind2(foo, data.frame(baz=9:12)), "invalid class")
+})
 

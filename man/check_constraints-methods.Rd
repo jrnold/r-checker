@@ -2,6 +2,7 @@
 \name{check_constraints-methods}
 \alias{check_constraints}
 \alias{check_constraints,ANY,ColumnChecks-method}
+\alias{check_constraints,data.frame,TableChecks-method}
 \alias{check_constraints-methods}
 \title{Methods for function \code{check_constraints}}
 \arguments{

@@ -20,8 +20,8 @@
   will create objects of the newly defined class.
 }
 \description{
-  Create a subclass of \code{HList}, which restricts
-  elements of the list to be a specified class.
+  Create a subclass of \code{\linkS4class{HList}}, which
+  restricts elements of the list to be a specified class.
 }
 \examples{
 NumericList <-
@@ -29,11 +29,16 @@ NumericList <-
 # creates a new class "NumericList"
 showClass("NumericList")
 # Create a new object of class NumericList
-foo <- NumericList(list(a=1, b=2))
+foo <- NumericList(a=1, b=2)
 print(foo)
 foo[["c"]] <- 3
 print(foo)
 # error
 try(foo[["c"]] <- 3)
+}
+\seealso{
+  \code{"\linkS4class{FunctionList}"} for a subclass
+  created with this function used in this section.
+  \code{\linkS4class{HList}}.
 }
 

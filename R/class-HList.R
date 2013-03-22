@@ -14,40 +14,6 @@ is_or_null <- function(object, class2) {
   is(object, class2) || is.null(object)
 }
 
-#' Homogenous lists
-#'
-#' An S4 subclass of \code{list} in which all elements of the
-#' list to be the same class.
-#'
-#' This is similar to the 'atomic lists' in R in that all elements
-#' of the vector must be the same class, but the \code{HList}
-#' supports arbitrary classes. \code{NULL} values are also valid.
-#' 
-#' @section Slots:
-#'
-#' \describe{
-#' \item{\code{.Data}}{Object of class \code{list}.}
-#' \item{\code{classtype}}{Object of class \code{character}. Required classtype for
-#' all elements in the list.}
-#' }
-#'
-#' @param ... Passed onto generic functions.
-#'
-#' @section Extends:
-#'
-#' \describe{
-#' \item{\code{list}}{Directly.}
-#' }
-#'
-#' @section Methods:
-#' 
-#' \describe{
-#'     \item{[<-}{\code{signature(x = "HList")}: ... }
-#'     \item{[}{\code{signature(x = "HList")}: ... }
-#'     \item{[[<-}{\code{signature(x = "HList")}: ... }
-#'     \item{c}{\code{signature(x = "HList")}: ... }
-#'     \item{show}{\code{signature(object = "HList")}: ... }
-#' }
 #' 
 #' @aliases HList-class
 #' @aliases HList
@@ -64,17 +30,47 @@ is_or_null <- function(object, class2) {
 #' @aliases show,HList-method
 #' @docType class
 #' @keywords classes
-#' @exportClass HList
-#' @export
+#' 
+#' @title Homogenous lists
+#'
+#' @description An S4 subclass of \code{list} in which all elements of the
+#' list to be the same class. This is similar to the 'atomic lists' in R in that all elements
+#' of the vector must be the same class, but the \code{HList}
+#' supports arbitrary classes. \code{NULL} values are also valid.
+#' 
+#' @section Slots:
+#'
+#' \describe{
+#' \item{\code{.Data}}{Object of class \code{list}.}
+#' \item{\code{classtype}}{Object of class \code{character}. Required classtype for
+#' all elements in the list.}
+#' }
+#'
+#' @param ... Passed onto generic functions.
+#' @section Extends:
+#'
+#' \describe{
+#' \item{\code{list}}{Directly.}
+#' }
+#'
+#' @section Methods:
+#' 
+#' \describe{
+#'     \item{[<-}{\code{signature(x = "HList")}: ... }
+#'     \item{[}{\code{signature(x = "HList")}: ... }
+#'     \item{[[<-}{\code{signature(x = "HList")}: ... }
+#'     \item{c}{\code{signature(x = "HList")}: ... }
+#'     \item{show}{\code{signature(object = "HList")}: ... }
+#' }
+#' @seealso \code{\link{hlist_class}}, 
 #' @examples
-#' foo <- HList(list(sum=sum, max=max, min=min), "function")
-#' print(foo)
-#' x <- 1:10
-#' lapply(foo, function(f) f(x))
-#' foo[["mean"]] <- mean
-#' print(foo)
-#' # error
-#' try(foo[["a"]] <- 1)
+#' # This is valid with lists
+#' foo <- list(a=1:10, b=c(1, 5))
+#' foo[["c"]] <- c("a", "z")
+#' # # But would not be valid with a homogenous list
+#' foo <- HList(list(a=1:10, b=c(1, 5)), "numeric")
+#' try(foo[["c"]] <- c("a", "z"))
+#' foo[["c"]] <- c(1, 4, 10)
 HList <- setClass("HList",
                       contains="namedList",
                       representation(classtype="character"),
