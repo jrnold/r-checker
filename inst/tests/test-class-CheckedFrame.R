@@ -265,3 +265,15 @@ test_that("dimnames<- throws error", {
   expect_error(dimnames(foo) <- list(letters[1:4], c("x", "a", "b")),
                "invalid class")
 })
+
+###################
+
+context("CheckedFrame coercion")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns)
+foo <- CheckedFrame(data.frame(foo=1:4, bar=5:8, baz=9:12), checks=checks)
+
+test_that("as(object, \"data.frame\") produces an S3 data.frame", {
+  expect_false(isS4(as(foo, "data.frame")))
+})

@@ -13,3 +13,9 @@ test_that("creating objects works", {
   expect_error(Bar(foo = letters), "invalid class")
 })
 
+test_that("as(object, \"data.frame\") produces an S3 data.frame", {
+  Bar <- checked_frame_class("Bar", checks)
+  foo <- Bar(foo = 1:10)
+  expect_false(isS4(as(foo, "data.frame")))
+})
+
