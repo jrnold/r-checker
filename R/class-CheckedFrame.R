@@ -143,7 +143,6 @@ setMethod("[", c(x="CheckedFrame", i = "missing", j = "ANY", drop="ANY"),
 
 setMethod("[", c(x="CheckedFrame", i = "ANY", j = "missing", drop="ANY"),
           function(x, i, j, drop = TRUE) {
-            print("foo")
             y <- as(x, "data.frame")[i, , drop=drop]
             tryCatch(CheckedFrame(y, checks=x@checks),
                      error = function(e) y)
