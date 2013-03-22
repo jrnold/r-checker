@@ -265,6 +265,3 @@ test_that("dimnames<- throws error", {
   expect_error(dimnames(foo) <- list(letters[1:4], c("x", "a", "b")),
                "invalid class")
 })
-
-
-

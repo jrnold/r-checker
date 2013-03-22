@@ -49,7 +49,7 @@ checked_frame_class <- function(Class,
   setMethod("initialize", Class,
            function(.Object, x) {
              callNextMethod(.Object, x, checks = checks)
-           })
+           }, where = where)
 
   # [-method
   # callNextMethod does not work for [
