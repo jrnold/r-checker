@@ -43,10 +43,14 @@ checked_frame_class <- function(Class,
     slotval <- optargs[[i]]
     slot(checks, slotname) <- slotval
   }
-  print(checks)
-  
+
   setClass(Class, contains="CheckedFrame", where=where)
-  
+
+  setMethod("initialize", Class,
+           function(.Object, x) {
+             callNextMethod(.Object, x, checks = checks)
+           })
+
   # [-method
   # callNextMethod does not work for [
   setMethod("[", c(x=Class, i="missing", j="missing"),
@@ -144,27 +148,27 @@ checked_frame_class <- function(Class,
             }, where=where)
 
   # names<-
-  setMethod("names<-", "CheckedFrame",
+  setMethod("names<-", Class,
             function(x, value) {
               y <- callNextMethod()
               new(Class, y)
             }, where=where)
   
   # colnames<-
-  setMethod("colnames<-", "CheckedFrame",
+  setMethod("colnames<-", Class,
             function(x, value) {
               y <- callNextMethod()
               new(Class, y)
             }, where=where)
   
   # rownames<-
-  setMethod("rownames<-", c(x = "CheckedFrame"), 
+  setMethod("rownames<-", c(x = Class),
             function(x, value) {
               callNextMethod()
             }, where=where)
   
   # names<-
-  setMethod("dimnames<-", c(x="CheckedFrame", value="list"),
+  setMethod("dimnames<-", c(x=Class, value="list"),
             function(x, value) {
               y <- callNextMethod()
               new(Class, y)

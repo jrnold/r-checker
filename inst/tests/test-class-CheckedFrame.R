@@ -6,9 +6,14 @@ test_that("initialize works", {
   expect_is(foo, "CheckedFrame")
 })
 
+test_that("initialize without checks works", {
+  foo <- new("CheckedFrame", data.frame(foo=1:10))
+  expect_is(foo, "CheckedFrame")
+})
+
 test_that("initialize checks validity", {
-  expect_is(new("CheckedFrame", data.frame(foo=1:10)),
-            "CheckedFrame")
+  expect_error(new("CheckedFrame", data.frame(foo=letters), checks=checks),
+               "invalid class")
 })
 
 test_that("initialize works", {
