@@ -1,4 +1,6 @@
 context("checked_frame_class")
 
-# checks <- TableChecks(ColumnCheckList(foo = ColumnChecks("numeric")))
+Foo <- checked_frame_class("Foo",
+                           columns =
+                           ColumnCheckList(foo = ColumnChecks("numeric", constraints = FunctionList(function(x) x > 0))))
 

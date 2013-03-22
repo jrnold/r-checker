@@ -43,6 +43,7 @@ checked_frame_class <- function(Class,
     slotval <- optargs[[i]]
     slot(checks, slotname) <- slotval
   }
+  print(checks)
   
   setClass(Class, contains="CheckedFrame", where=where)
   
