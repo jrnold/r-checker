@@ -57,10 +57,6 @@ setGeneric("check_constraints",
 
 check_constraints.ANY.ColumnChecks <- function(object, checks) {
   name <- "object"
-  ## if no elements, then always true
-  if (length(object) == 0) {
-    return(TRUE)
-  }
   # check type
   if (checks@classtype != "ANY") {
     if (! is(object, checks@classtype)) {
@@ -83,16 +79,19 @@ check_constraints.ANY.ColumnChecks <- function(object, checks) {
     }
   }
   # check constraints
-  for (i in seq_along(checks@constraints)) {
-    f <- checks@constraints[[i]]
-    if (!all(f(object))) {
-      constr_name <- names(checks@constraints)[i]
-      if (empty_character(constr_name)) {
-        constr_name <- sprintf("#%d", i)
-      } else {
-        constr_name <- dQuote(constr_name)
+  # only run the constraints if there are values to check
+  if (length(object)) {
+    for (i in seq_along(checks@constraints)) {
+      f <- checks@constraints[[i]]
+      if (!all(f(object))) {
+        constr_name <- names(checks@constraints)[i]
+        if (empty_character(constr_name)) {
+          constr_name <- sprintf("#%d", i)
+        } else {
+          constr_name <- dQuote(constr_name)
+        }
+        return(sprintf("Failed constraint %s", constr_name))
       }
-      return(sprintf("Failed constraint %s", constr_name))
     }
   }
   TRUE

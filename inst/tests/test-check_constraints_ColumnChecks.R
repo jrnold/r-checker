@@ -50,3 +50,6 @@ test_that("arbitrary unnamed constraints works", {
   expect_match(check_constraints(foo, checks2), "Failed constraint #2")
 })
 
+test_that("arbitrary constraints returns TRUE if length = 0", {
+  expect_true(check_constraints(numeric(), checks2))
+})
