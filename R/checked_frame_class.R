@@ -46,12 +46,6 @@ checked_frame_class <- function(Class,
   
   setClass(Class, contains="CheckedFrame", where=where)
   
-  setMethod("show", Class,
-            function(object) {
-              cat(sprintf("An object of class %s\n", dQuote(Class)))
-              callGeneric(as(object, "CheckedFrame"))
-            }, where=where)
-
   # [-method
   # callNextMethod does not work for [
   setMethod("[", c(x=Class, i="missing", j="missing"),
