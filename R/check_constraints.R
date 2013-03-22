@@ -57,6 +57,10 @@ setGeneric("check_constraints",
 
 check_constraints.ANY.ColumnChecks <- function(object, checks) {
   name <- "object"
+  ## if no elements, then always true
+  if (length(object) == 0) {
+    return(TRUE)
+  }
   # check type
   if (checks@classtype != "ANY") {
     if (! is(object, checks@classtype)) {
