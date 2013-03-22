@@ -3,7 +3,7 @@
 #' @export checked_frame_class
 NULL
 
-# checks: ColumnCheckList
+# param checks ColumnCheckList
 proto_data_frame <- function(checks) {
   .data <- data.frame()
   for (i in seq_along(checks)) {
@@ -28,25 +28,24 @@ proto_data_frame <- function(checks) {
 #' will be used to check the validity of data frames in this class.
 #' @param where Passed to \code{\link{setClass}}. The environment
 #' in which to store the definition.
+#' @param ... Arguments overrides the slot values in \code{checks}.
 #' @return Invisibly returns a constructor function for the
 #' new class.
 checked_frame_class <- function(Class,
-                                checks = checks(),
+                                checks = TableChecks(),
+                                ..., 
                                 where=topenv(parent.frame())) {
 
-  checks <- do.call(FunctionList, checks)
+  ## Fill in values of checks from optional args
+  optargs <- list(...)
+  for (i in seq_along(optargs)) {
+    slotname <- names(optargs)[i]
+    slotval <- optargs[[i]]
+    slot(checks, slotname) <- slotval
+  }
   
-  setClass(Class, contains="CheckedFrame",
-           prototype = prototype(x = proto_data_frame(checks),
-             checks = checks),
-           where=where)
+  setClass(Class, contains="CheckedFrame", where=where)
   
-  setMethod("initialize", Class,
-            function(.Object, x=proto_data_frame(checks)) {
-              callNextMethod(.Object, x,
-                             checks = checks)
-            }, where=where)
-
   setMethod("show", Class,
             function(object) {
               cat(sprintf("An object of class %s\n", dQuote(Class)))

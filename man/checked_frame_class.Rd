@@ -2,7 +2,7 @@
 \alias{checked_frame_class}
 \title{Create subclasss of \code{CheckedFrame}}
 \usage{
-  checked_frame_class(Class, checks = checks(),
+  checked_frame_class(Class, checks = TableChecks(), ...,
     where = topenv(parent.frame()))
 }
 \arguments{
@@ -14,6 +14,9 @@
 
   \item{where}{Passed to \code{\link{setClass}}. The
   environment in which to store the definition.}
+
+  \item{...}{Arguments overrides the slot values in
+  \code{checks}.}
 }
 \value{
   Invisibly returns a constructor function for the new
