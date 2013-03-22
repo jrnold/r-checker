@@ -24,29 +24,29 @@ test_that("column_constraints works with valid column", {
 
 test_that("column constraints catches bad class", {
   foo <- letters
-  expect_equal(check_constraints(foo, checks2),
-               "‘object’ does not inherit from “numeric”")
+  expect_match(check_constraints(foo, checks2),
+               "does not inherit from")
 })
 
 test_that("column constraints catches missing", {
   foo <- c(NA, 1:5)
-  expect_equal(check_constraints(foo, checks2),
-               "‘object’ has missing values")
+  expect_match(check_constraints(foo, checks2),
+               "has missing values")
 })
 
 test_that("column constraints catches duplicates", {
   foo <- c(1, 1, 2)
-  expect_equal(check_constraints(foo, checks2),
-               "‘object’ has duplicated values")
+  expect_match(check_constraints(foo, checks2),
+               "has duplicated values")
 })
 
 test_that("arbitrary named constraints works", {
   foo <- -1:1
-  expect_equal(check_constraints(foo, checks2), "Failed constraint “a”")
+  expect_match(check_constraints(foo, checks2), "Failed constraint")
 })
 
 test_that("arbitrary unnamed constraints works", {
   foo <- 9:11
-  expect_equal(check_constraints(foo, checks2), "Failed constraint #2")
+  expect_match(check_constraints(foo, checks2), "Failed constraint #2")
 })
 
