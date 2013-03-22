@@ -214,3 +214,52 @@ test_that("cbind2 throws error", {
   expect_error(cbind2(foo, data.frame(baz=9:12)), "invalid class")
 })
 
+#############
+context("nanes CheckedFrame")
+
+columns <- ColumnCheckList(foo = ColumnChecks(classtype="numeric"))
+checks <- TableChecks(columns=columns)
+foo <- CheckedFrame(data.frame(foo=1:4, bar=5:8, baz=9:12), checks=checks)
+
+test_that("names<- works", {
+  names(foo) <- c("foo", "a", "b")
+  expected <- CheckedFrame(data.frame(foo=1:4,
+                                      a=5:8, b=9:12), checks=checks)
+  expect_equal(foo, expected)
+})
+
+test_that("names<- throws error", {
+  expect_error(names(foo) <- c("c", "a", "b"), "invalid class")
+})
+
+test_that("colnames<- works", {
+  colnames(foo) <- c("foo", "a", "b")
+  expected <- CheckedFrame(data.frame(foo=1:4,
+                                      a=5:8, b=9:12), checks=checks)
+  expect_equal(foo, expected)
+})
+
+test_that("colnames<- throws error", {
+  expect_error(colnames(foo) <- c("c", "a", "b"), "invalid class")
+})
+
+test_that("rownames<- works", {
+  rownames(foo) <- letters[1:4]
+  expect_is(foo, "CheckedFrame")
+  expect_equal(rownames(foo), letters[1:4])
+})
+
+test_that("dimnames<- works", {
+  dimnames(foo) <- list(letters[1:4], c("foo", "a", "b"))
+  expect_is(foo, "CheckedFrame")
+  expect_equal(rownames(foo), letters[1:4])
+  expect_equal(colnames(foo), c("foo", "a", "b"))
+})
+
+test_that("dimnames<- throws error", {
+  expect_error(dimnames(foo) <- list(letters[1:4], c("x", "a", "b")),
+               "invalid class")
+})
+
+
+
