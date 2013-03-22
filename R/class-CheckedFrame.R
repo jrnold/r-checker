@@ -258,3 +258,12 @@ setMethod("dimnames<-", c(x="CheckedFrame", value="list"),
             x
           })
 
+# coerce back to the S3 data.frame
+# if this is not done, the new object will keep the old slots.
+# it will also give warnings when altered that the output is no
+# longer an S4 object.
+setAs("CheckedFrame", "data.frame",
+      function(from) {
+        data.frame(from)
+      })
+

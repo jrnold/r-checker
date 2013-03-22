@@ -173,9 +173,12 @@ checked_frame_class <- function(Class,
               y <- callNextMethod()
               new(Class, y)
             }, where=where)
-  
-  setAs("data.frame", Class,
-        function(from, to) new(Class, from), where=where)
+
+  ## This need to be explicitly set since non-implicit coercion
+  ## method are not inherited, so it does not inherit this from
+  ## CheckedFrame
+  setAs(Class, "data.frame",
+        function(from) data.frame(from), where=where)
   
   .f <- function(...) {
     new(Class, data.frame(...))
