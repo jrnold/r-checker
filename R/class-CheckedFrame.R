@@ -113,7 +113,7 @@ CheckedFrame <-
 
 setValidity("CheckedFrame",
             function(object) {
-              check_constraints(object, object@checks)
+              check_constraints(object)
             })
 
 setMethod("show", "CheckedFrame",

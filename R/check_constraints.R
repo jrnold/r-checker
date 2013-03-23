@@ -165,3 +165,10 @@ check_constraints.data.frame.TableChecks <- function(object, checks) {
 #' @aliases check_constraints,data.frame,TableChecks-method
 setMethod("check_constraints", c("data.frame", "TableChecks"),
           check_constraints.data.frame.TableChecks)
+
+#' @rdname check_constraints-methods
+#' @aliases check_constraints,CheckedFrame,missing-method
+setMethod("check_constraints", c("CheckedFrame", "missing"),
+          function(object, checks) {
+            callGeneric(as(object, "data.frame"), object@checks)
+          })
