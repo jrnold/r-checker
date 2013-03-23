@@ -2,6 +2,7 @@
 \name{check_constraints-methods}
 \alias{check_constraints}
 \alias{check_constraints,ANY,ColumnChecks-method}
+\alias{check_constraints,CheckedFrame,missing-method}
 \alias{check_constraints,data.frame,TableChecks-method}
 \alias{check_constraints-methods}
 \title{Methods for function \code{check_constraints}}
@@ -24,7 +25,9 @@
 \section{Methods}{
   \describe{ \item{\code{signature(object = "ANY", checks =
   "ColumnChecks")}}{ } \item{\code{signature(object =
-  "data.frame", checks = "TableChecks")}}{ } }
+  "data.frame", checks = "TableChecks")}}{ }
+  \item{\code{signature(object = "CheckedFrame", checks =
+  "missing")}}{ } }
 }
 \examples{
 # create a TableChecks object

@@ -1,5 +1,6 @@
 #' @include package.R
 #' @include class-TableChecks.R
+#' @include class-CheckedFrame.R
 #' @exportMethod check_constraints
 NULL
 
@@ -22,6 +23,8 @@ NULL
 #' \item{\code{signature(object = "ANY", checks = "ColumnChecks")}}{
 #' }
 #' \item{\code{signature(object = "data.frame", checks = "TableChecks")}}{
+#' }
+#' \item{\code{signature(object = "CheckedFrame", checks = "missing")}}{
 #' }
 #' }
 #'
