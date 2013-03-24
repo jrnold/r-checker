@@ -35,6 +35,8 @@ NULL
 #' # error
 #' try(foo[["c"]] <- 3)
 hlist_class <- function(Class, classtype="ANY",
+                        empty_names = TRUE,
+                        unique_names = FALSE,
                         where=topenv(parent.frame())) {
 
   ## if (isClass(Class, where=where)) {
@@ -47,12 +49,16 @@ hlist_class <- function(Class, classtype="ANY",
   
   setClass(Class,
            contains="HList",
-           prototype=prototype(list(), classtype=classtype),
+           prototype=prototype(list(), classtype=classtype,
+             empty_names = empty_names,
+             unique_names = unique_names),
            where=where)
   
   setMethod("initialize", Class,
             function(.Object, x=list()) {
-              callNextMethod(.Object, x, classtype=classtype)
+              callNextMethod(.Object, x, classtype=classtype,
+                             empty_names = empty_names,
+                             unique_names = unique_names)
             }, where=where)
 
   setValidity(Class,
