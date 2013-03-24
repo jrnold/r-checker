@@ -1,7 +1,7 @@
 Package: checker
 Maintainer: Jeffrey Arnold <jeffrey.arnold@gmail.com>
 Author: Jeffrey Arnold <jeffrey.arnold@gmail.com>
-Version: 0.2-1
+Version: 0.2-2
 License: GPL-3
 Title: Data frames with column and table constraints
 Description: Classes that add column and table constraints
