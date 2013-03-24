@@ -26,12 +26,22 @@ test_that("new(\"HList\") works with NULL elements", {
 
 test_that("HList() works", {
   expect_identical(HList(list(a=1, b=2), "numeric"),
-                   new("HList", list(a=1, b=2), "numeric"))
+                   new("HList", list(a=1, b=2), classtype="numeric"))
 })
 
 test_that("Error if bad classtype", {
     expect_error(new("HList", letters, classtype="integer"),
                  "Not all elements have class")
+})
+
+test_that("Catch empty names if empty_names = FALSE", {
+    expect_error(new("HList", list(1, 2), empty_names = FALSE),
+                 "invalid class")
+})
+
+test_that("Catch empty names if unique_names = TRUE", {
+  expect_error(new("HList", list(a=1, a=2), unique_names = TRUE),
+               "invalid class")
 })
 
 test_that("Error if length classtype > 1", {
@@ -178,12 +188,13 @@ context("length<-,HList method")
 
 test_that("length<- works with value < length(object)", {
   length(foo) <- 1
-  expect_equal(foo, new("HList", list(a=1), "numeric"))
+  expected <- new("HList", list(a=1), classtype="numeric")
+  expect_equal(foo, expected)
 })
 
 test_that("length<- works with value == length(object)", {
   length(foo) <- length(foo)
-  expect_equal(foo, new("HList", list(a=1, b=2, c=3), "numeric"))
+  expect_equal(foo, new("HList", list(a=1, b=2, c=3), classtype="numeric"))
 })
 
 test_that("length<- works with value > length(object)", {

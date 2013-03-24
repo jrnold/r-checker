@@ -15,10 +15,15 @@
 \alias{show,HList-method}
 \title{Homogenous lists}
 \usage{
-  HList(...)
+  HList(x, classtype = "ANY", ...)
 }
 \arguments{
-  \item{...}{Passed onto generic functions.}
+  \item{x}{\code{list}.}
+
+  \item{classtype}{\code{character}}
+
+  \item{...}{Data to include in the new object. Named
+  arguments correspond to slots in the class definition.}
 }
 \description{
   An S4 subclass of \code{list} in which all elements of
@@ -29,9 +34,12 @@
 }
 \section{Slots}{
   \describe{ \item{\code{.Data}}{Object of class
-  \code{list}.} \item{\code{classtype}}{Object of class
-  \code{character}. Required classtype for all elements in
-  the list.} }
+  \code{list}.} \item{\code{classtype}}{\code{character}.
+  Required classtype for all elements in the list.}
+  \item{\code{empty_names}}{\code{logical}. If
+  \code{FALSE}, then no names can be \code{NA} or
+  \code{""}.} \item{\code{unique_names}}{\code{logical}. If
+  \code{TRUE}, then no duplicate names are allowed.} }
 }
 
 \section{Extends}{
@@ -39,11 +47,11 @@
 }
 
 \section{Methods}{
-  \describe{ \item{[<-}{\code{signature(x = "HList")}: ...
-  } \item{[}{\code{signature(x = "HList")}: ... }
-  \item{[[<-}{\code{signature(x = "HList")}: ... }
-  \item{c}{\code{signature(x = "HList")}: ... }
-  \item{show}{\code{signature(object = "HList")}: ... } }
+  \describe{ \item{[<-}{\code{signature(x = "HList")}}
+  \item{[}{\code{signature(x = "HList")}}
+  \item{[[<-}{\code{signature(x = "HList")}}
+  \item{c}{\code{signature(x = "HList")}}
+  \item{show}{\code{signature(object = "HList")}} }
 }
 \examples{
 # This is valid with lists
