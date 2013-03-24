@@ -14,6 +14,10 @@ NULL
 #' that will extend \code{HList}.
 #' @param classtype \code{character} The name of the class which 
 #' all elements must inherit from.
+#' @param empty_names \code{logical} If \code{FALSE}, then no names can
+#' have values \code{""} or \code{NA}.
+#' @param unique_names \code{logical} If \code{TRUE}, then names must
+#' be unique.
 #' @param where Passed to \code{\link{setClass}}. The environment
 #' in which to store the definition.
 #'

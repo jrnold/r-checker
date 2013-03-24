@@ -2,8 +2,8 @@
 \alias{hlist_class}
 \title{Create a subclass of \code{HList}}
 \usage{
-  hlist_class(Class, classtype = "ANY",
-    where = topenv(parent.frame()))
+  hlist_class(Class, classtype = "ANY", empty_names = TRUE,
+    unique_names = FALSE, where = topenv(parent.frame()))
 }
 \arguments{
   \item{Class}{\code{character} string name of the new
@@ -11,6 +11,12 @@
 
   \item{classtype}{\code{character} The name of the class
   which all elements must inherit from.}
+
+  \item{empty_names}{\code{logical} If \code{FALSE}, then
+  no names can have values \code{""} or \code{NA}.}
+
+  \item{unique_names}{\code{logical} If \code{TRUE}, then
+  names must be unique.}
 
   \item{where}{Passed to \code{\link{setClass}}. The
   environment in which to store the definition.}

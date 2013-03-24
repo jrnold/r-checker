@@ -184,6 +184,7 @@ setMethod("$<-", signature=c(x="HList"),
 setMethod("names<-", signature=c(x="HList", value="NULL"),
           function(x, value) {
             x@names <- rep(NA_character_, length(x))
+            validObject(x)
             x
           })
 
