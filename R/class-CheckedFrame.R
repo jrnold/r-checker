@@ -126,7 +126,7 @@ setMethod("show", "CheckedFrame",
 
 # [-method
 setMethod("[", c(x="CheckedFrame", i="missing", j="missing", drop="ANY"),
-          function(x, i, j, drop=TRUE) {
+          function(x, i, j, drop = FALSE) {
             if (drop && ncol(x) == 1) {
               x[[1]]
             } else {
@@ -135,26 +135,38 @@ setMethod("[", c(x="CheckedFrame", i="missing", j="missing", drop="ANY"),
           })
 
 setMethod("[", c(x="CheckedFrame", i = "missing", j = "ANY", drop="ANY"), 
-          function(x, i, j, drop=TRUE) {
+          function(x, i, j, drop = FALSE) {
             y <- data.frame(x)[ , j, drop=drop]
-            tryCatch(CheckedFrame(y, checks=x@checks),
-                     error = function(e) y)
+            if (is.data.frame(y)) {
+              tryCatch(CheckedFrame(y, checks=x@checks),
+                       error = function(e) y)
+            } else {
+              y
+            }
           })
 
 setMethod("[", c(x="CheckedFrame", i = "ANY", j = "missing", drop="ANY"),
-          function(x, i, j, drop = TRUE) {
+          function(x, i, j, drop = FALSE) {
             y <- as(x, "data.frame")[i, , drop=drop]
-            tryCatch(CheckedFrame(y, checks=x@checks),
-                     error = function(e) y)
+            if (is.data.frame(y)) {
+              tryCatch(CheckedFrame(y, checks=x@checks),
+                       error = function(e) y)
+            } else {
+              # If 1 row and drop=TRUE, then it returns a list
+              y
+            }
           })
 
 setMethod("[", c(x="CheckedFrame", i = "ANY", j = "ANY", drop = "ANY"),
-          function(x, i, j, drop = TRUE) {
+          function(x, i, j, drop = FALSE) {
             y <- as(x, "data.frame")[i, j, drop=drop]
-            tryCatch(CheckedFrame(y, checks=x@checks),
-                     error = function(e) y)
+            if (is.data.frame(y)) {
+              tryCatch(CheckedFrame(y, checks=x@checks),
+                       error = function(e) y)
+            } else{
+              y
+            }
           })
-
 
 # [<- method
 

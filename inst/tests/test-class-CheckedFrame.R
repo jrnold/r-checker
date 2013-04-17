@@ -43,32 +43,36 @@ test_that("[,DataFrameConstr,missing,missing works", {
   expect_equal(foo[drop=FALSE], foo)
 })
 
-test_that("[,DataFrameConstr,missing,character with drop=missing  works", {
-  expect_equal(foo[ , "foo"], as.numeric(1:10))
-})
-
 test_that("[,DataFrameConstr,missing,character with drop=FALSE works", {
   expect_equal(foo[ , "foo", drop=FALSE],
                CheckedFrame(data.frame(foo=1:10), checks=checks))
 })
 
 test_that("[,DataFrameConstr,integer,missing works", {
-  expected <- CheckedFrame(foo[1:2], checks=foo@checks)
+  expected <- CheckedFrame(data.frame(foo = 1:2, bar=1:2),
+                           checks=foo@checks)
   expect_equal(foo[1:2], expected)
 })
 
 test_that("[,DataFrameConstr,integer,missing: test #1", {
-  expect_equal(foo[1:2, "foo"], 1:2)
+  expected <- CheckedFrame(data.frame(foo = 1:2), checks=foo@checks)
+  expect_equal(foo[1:2, "foo"], expected)
 })
 
 test_that("[,DataFrameConstr,integer,missing: test #2", {
   expect_equal(foo[1:2, "bar", drop=FALSE], data.frame(bar=1:2))
 })
 
-test_that("[,DataFrameConstr,integer,mssing: test #3", {
+test_that("[,DataFrameConstr,integer,character: test #3", {
   expected <- CheckedFrame(data.frame(foo=1:2, bar=1:2),
                            checks=foo@checks)
   expect_equal(foo[1:2, c("foo", "bar"), drop=FALSE], expected)
+})
+
+test_that("[,DataFrameConstr,integer,mssing: test #4", {
+  expected <- CheckedFrame(data.frame(foo=1:2, bar=1:2),
+                           checks=foo@checks)
+  expect_equal(foo[1, c("foo", "bar"), drop=FALSE], expected)
 })
 
 test_that("[,DataFrameConstr drops to data.frame if invalid subset", {
