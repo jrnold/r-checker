@@ -70,7 +70,7 @@ test_that("[,DataFrameConstr,integer,character: test #3", {
 })
 
 test_that("[,DataFrameConstr,integer,mssing: test #4", {
-  expected <- CheckedFrame(data.frame(foo=1:2, bar=1:2),
+  expected <- CheckedFrame(data.frame(foo=1, bar=1),
                            checks=foo@checks)
   expect_equal(foo[1, c("foo", "bar"), drop=FALSE], expected)
 })
