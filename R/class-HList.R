@@ -145,8 +145,9 @@ setMethod("[", signature=c(x="HList", i="missing"),
 setMethod("[", signature=c(x="HList", i="ANY"), 
           function(x, i, j, ...., drop) {
             y <- callGeneric(as(x, "namedList"), i=i)
-            new("HList", y, classtype=x@classtype,
-                empty_names = x@empty_names, unique_names = x@unique_names)
+            tryCatch(new("HList", y, classtype=x@classtype,
+                         empty_names = x@empty_names, unique_names = x@unique_names),
+                     function(e) y)
           })
 
 setMethod("[<-", signature=c(x="HList", i="missing"), 

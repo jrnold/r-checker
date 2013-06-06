@@ -88,7 +88,7 @@ hlist_class <- function(Class, classtype="ANY",
   setMethod("[", signature = c(x = Class, i = "ANY", j="ANY"), 
             function(x, i, j, drop) {
               y <- callGeneric(as(x, "HList"), i=i)
-              new(Class, y)
+              if (is(y, "HList")) new(Class, y) else y
             }, where = where)
   
   setMethod("[<-", signature = c(x = Class, i = "missing"), 
